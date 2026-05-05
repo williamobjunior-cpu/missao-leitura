@@ -1,0 +1,3612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#9f0712">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Controle de Viaturas">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <meta name="theme-color" content="#9f0712" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Controle de Viaturas" />
+  <title>Controle de Viaturas - Base Aprovada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --cor-primaria:#9f0712;
+      --cor-primaria-escura:#7d0610;
+      --cor-primaria-clara:#fde8ea;
+      --bg:#f4f5f7;
+      --card:#ffffff;
+      --texto:#0f172a;
+      --muted:#64748b;
+      --ok:#15803d;
+      --warn:#b45309;
+      --danger:#b91c1c;
+    }
+    *{font-family:'Inter',sans-serif}
+    body{background:var(--bg);color:var(--texto)}
+    .card{background:var(--card);border-radius:28px;box-shadow:0 18px 40px rgba(15,23,42,.08);border:1px solid rgba(148,163,184,.12)}
+    .input,.select,.textarea{
+      width:100%;
+      border:1px solid #e5e7eb;
+      border-radius:20px;
+      padding:14px 16px;
+      outline:none;
+      background:#fff;
+    }
+    .section-title{font-size:clamp(1.6rem, 2vw, 2.2rem);line-height:1.05;font-weight:900;letter-spacing:-.03em}
+    .kpi{position:relative;overflow:hidden;min-height:122px}
+    .kpi:before{content:"";position:absolute;inset:auto -35px -35px auto;width:110px;height:110px;border-radius:999px;background:linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,0));}
+    .kpi-label{font-size:.98rem;color:#64748b;font-weight:500}
+    .kpi-value{font-size:3rem;line-height:1;font-weight:900;letter-spacing:-.04em;margin-top:.35rem}
+    .app-shell{max-width:1300px}
+    .hero-header{border-bottom-left-radius:34px;border-bottom-right-radius:34px;box-shadow:0 20px 45px rgba(127,29,29,.18)}
+    .top-actions .btn{min-height:56px;border-radius:20px;padding:0 22px}
+    .nav-strip{padding:10px;overflow-x:auto}
+    .nav-scroll{display:flex;gap:10px;min-width:max-content}
+    .nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:64px;padding:0 18px;border-radius:22px;background:#fff;color:#0f172a;white-space:nowrap;font-size:1rem;box-shadow:inset 0 0 0 1px rgba(226,232,240,1)}
+    .nav-btn .nav-emoji{font-size:1.05rem}
+    .nav-btn.active{
+      background:linear-gradient(180deg,var(--cor-primaria),var(--cor-primaria-escura));
+      color:#fff;
+      box-shadow:0 14px 28px rgba(159,7,18,.26);
+    }
+    .soft-panel{background:linear-gradient(180deg,#ffffff,#fbfdff)}
+    .alert-card{border-radius:22px;padding:16px 18px;border:1px solid}
+    @media (max-width:768px){
+      .hero-header{border-bottom-left-radius:26px;border-bottom-right-radius:26px}
+      .top-actions{gap:10px}
+      .top-actions .btn{min-height:52px}
+      .nav-btn{min-height:60px;padding:0 16px;font-size:.97rem}
+    }
+    .textarea{min-height:110px;resize:vertical}
+    .input:focus,.select:focus,.textarea:focus{
+      border-color:var(--cor-primaria);
+      box-shadow:0 0 0 3px rgba(159,7,18,.10);
+    }
+    .btn{
+      border:none;
+      border-radius:20px;
+      padding:13px 18px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.18s;
+      line-height:1.1;
+      box-shadow:0 8px 18px rgba(15,23,42,.08);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-primary{background:var(--cor-primaria);color:#fff}
+    .btn-primary:hover{background:var(--cor-primaria-escura)}
+    .btn-soft{background:#fff;border:1px solid #e5e7eb}
+    .btn-soft:hover{background:#f8fafc}
+    .btn-danger{background:#fff1f2;border:1px solid #fecdd3;color:var(--danger)}
+    .btn-ok{background:#ecfdf5;border:1px solid #bbf7d0;color:var(--ok)}
+    .btn-wa{background:#16a34a;color:#fff}
+    .btn-wa:hover{filter:brightness(.95)}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900
+    }
+    .nav-btn.active{
+      background:var(--cor-primaria);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(159,7,18,.24);
+    }
+    .hidden-view{display:none}
+    .logo-box{
+      width:56px;height:56px;border-radius:16px;object-fit:cover;
+      background:#fff;border:1px solid rgba(255,255,255,.28)
+    }
+    .cover-bg{
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.58)),
+        radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 40%),
+        linear-gradient(135deg, var(--cor-primaria), #111827);
+    }
+    .kpi{border:1px solid #eef2f7}
+    .muted{color:var(--muted)}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .danger{color:var(--danger)}
+    .table-wrap{overflow:auto}
+    .chip{padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}
+    .divider{height:1px;background:#edf2f7}
+    .thumb{
+      width:100%;
+      max-height:220px;
+      object-fit:cover;
+      border-radius:18px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+    }
+    .small-thumb{
+      width:92px;height:92px;object-fit:cover;border-radius:18px;border:1px solid #e5e7eb;background:#fff;
+    }
+    @media print{
+      .no-print{display:none!important}
+      body{background:#fff}
+      .card{box-shadow:none;border:1px solid #e5e7eb}
+      .print-stack{display:block!important}
+    }
+  
+    .install-guide{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:28px}
+    .guide-chip{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.12);font-weight:700}
+    .platform-card{border-radius:24px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:18px}
+    .platform-title{font-size:1.15rem;font-weight:900}
+    .step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#fff;color:#7f1d1d;font-weight:900;margin-right:8px}
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <section id="loadingScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="card p-8 w-full max-w-lg text-center">
+      <div class="text-3xl font-black">Carregando sistema...</div>
+      <div class="muted mt-2">Aguarde alguns segundos</div>
+    </div>
+  
+<div class="mt-8 install-guide p-5 md:p-6 text-white max-w-5xl mx-auto">
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <span class="guide-chip">📲 Instalação rápida</span>
+    <span class="guide-chip">🔒 Uso interno</span>
+    <span class="guide-chip">⚡ Android e iPhone</span>
+  </div>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="platform-card">
+      <div class="platform-title mb-3">Android</div>
+      <div class="space-y-2 text-white/95 text-sm md:text-base">
+        <div><span class="step-num">1</span>Abra o link no <b>Chrome</b>.</div>
+        <div><span class="step-num">2</span>Toque em <b>Instalar app</b> ou no menu <b>⋮</b>.</div>
+        <div><span class="step-num">3</span>Confirme para criar o ícone na tela inicial.</div>
+      </div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-title mb-3">iPhone / iPad</div>
+      <div class="space-y-2 text-white/95 text-sm md:text-base">
+        <div><span class="step-num">1</span>Abra o link no <b>Safari</b>.</div>
+        <div><span class="step-num">2</span>Toque em <b>Compartilhar</b>.</div>
+        <div><span class="step-num">3</span>Escolha <b>Adicionar à Tela de Início</b>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 text-white/85 text-sm">
+    Dica: depois de instalar, abra sempre pelo ícone da tela inicial para usar como aplicativo.
+  </div>
+</div>
+
+      </section>
+
+  <section id="coverScreen" class="hidden min-h-screen cover-bg text-white">
+    <div class="min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-5xl rounded-[36px] border border-white/10 bg-white/10 backdrop-blur-sm p-6 md:p-10 shadow-2xl">
+        <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <img id="coverLogo" class="w-24 h-24 md:w-32 md:h-32 rounded-[26px] object-cover bg-white border border-white/30" alt="logo" />
+          <div class="flex-1 text-center md:text-left">
+            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wide mb-4">
+              <span>🚒</span>
+              <span id="coverSigla">UNIDADE</span>
+            </div>
+            <h1 id="coverTitle" class="text-3xl md:text-5xl font-black leading-tight">Controle de Viaturas</h1>
+            <p id="coverSubtitle" class="mt-3 text-white/85 text-sm md:text-lg">Sistema configurável para uso interno por unidade</p>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+              <button id="btnGoLogin" class="btn bg-white text-slate-900 text-base md:text-lg px-6 py-4">ENTRAR NO SISTEMA</button>
+              <button id="btnGoReport" class="btn bg-white/10 text-white border border-white/20 text-base md:text-lg px-6 py-4">RELATÓRIO RÁPIDO</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="loginScreen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md card overflow-hidden">
+      <div class="p-8 text-white" id="loginHeader" style="background:var(--cor-primaria)">
+        <div class="flex items-center gap-4">
+          <img id="loginLogo" class="logo-box" alt="logo" />
+          <div>
+            <h1 id="loginTitle" class="text-[clamp(2rem,3vw,3rem)] font-black leading-none tracking-[-0.04em]">Controle de Viaturas</h1>
+            <p id="loginSubtitle" class="text-white/90 text-base md:text-lg">Sistema configurável por unidade</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Usuário</label>
+          <input id="loginUser" class="input" placeholder="Digite o usuário" />
+        </div>
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Senha</label>
+          <input id="loginPass" type="password" class="input" placeholder="Digite a senha" />
+        </div>
+        <div class="grid grid-cols-1 gap-3">
+          <button id="btnLogin" class="btn btn-primary w-full">Entrar</button>
+          <button id="btnPadrao" class="btn btn-soft w-full">Preencher acesso padrão</button>
+          <button id="btnVoltarCapa" class="btn btn-soft w-full">Voltar para capa</button>
+        </div>
+        <div id="loginMsg" class="text-sm text-center danger font-semibold"></div>
+        <div class="text-xs text-slate-500 text-center">
+          Primeiro acesso padrão: <b>admin</b> / <b>admin123</b>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="appScreen" class="hidden">
+    <header class="px-4 md:px-6 py-4 text-white shadow-lg" style="background:var(--cor-primaria)">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <img id="headerLogo" class="logo-box" alt="logo" />
+          <div>
+            <h1 id="headerTitle" class="text-[clamp(2rem,3vw,3rem)] font-black leading-none tracking-[-0.04em]">Controle de Viaturas</h1>
+            <p id="headerSubtitle" class="text-white/90 text-base md:text-lg">Sistema configurável por unidade</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap top-actions">
+          <div class="badge bg-white/10 text-white"><span>👤</span><span id="sessionNome">-</span></div>
+          <button id="btnWhatsHeader" class="btn btn-wa no-print">WhatsApp</button>
+          <button id="btnPrint" class="btn bg-white text-slate-800 no-print">Imprimir</button>
+          <button id="btnLogout" class="btn text-white no-print" style="background:var(--cor-primaria-escura)">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-shell mx-auto p-4 md:p-6 space-y-5">
+      <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <div class="card p-5 kpi">
+          <div class="kpi-label">Viaturas</div>
+          <div id="statViaturas" class="kpi-value">0</div>
+        </div>
+        <div class="card p-5 kpi">
+          <div class="kpi-label">Operando</div>
+          <div id="statOperando" class="kpi-value ok">0</div>
+        </div>
+        <div class="card p-5 kpi">
+          <div class="kpi-label">Inoperante</div>
+          <div id="statInoperante" class="kpi-value danger">0</div>
+        </div>
+        <div class="card p-5 kpi">
+          <div class="kpi-label">Manutenções</div>
+          <div id="statManut" class="kpi-value">0</div>
+        </div>
+        <div class="card p-5 kpi">
+          <div class="kpi-label">Próximas</div>
+          <div id="statProx" class="kpi-value warn">0</div>
+        </div>
+        <div class="card p-5 kpi bg-rose-50">
+          <div class="kpi-label text-rose-700">Vencidas</div>
+          <div id="statVenc" class="kpi-value danger">0</div>
+        </div>
+      </div>
+
+      <div class="card nav-strip no-print soft-panel">
+        <div class="nav-scroll">
+          <button class="nav-btn active" data-view="painel"><span class="nav-emoji">🏠</span><span>Painel</span></button>
+          <button class="nav-btn" data-view="resumo-viaturas"><span class="nav-emoji">🚒</span><span>Resumo Operacional</span></button>
+          <button class="nav-btn" data-view="manutencoes"><span class="nav-emoji">🛠️</span><span>Manutenções</span></button>
+          <button class="nav-btn" data-view="relatorios"><span class="nav-emoji">📊</span><span>Relatórios</span></button>
+          <button class="nav-btn only-admin" data-view="central"><span class="nav-emoji">⚙️</span><span>Central Admin</span></button>
+        </div>
+      </div>
+
+      <section id="view-painel">
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="card p-6 lg:col-span-2 soft-panel">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <h2 class="section-title">Resumo por Viatura</h2>
+              <input id="buscaPainel" class="input max-w-xs no-print" placeholder="Buscar prefixo..." />
+            </div>
+            <div class="table-wrap">
+              <table class="w-full min-w-[760px]">
+                <thead>
+                  <tr class="text-left text-slate-500 border-b">
+                    <th class="py-3 px-3">Prefixo</th>
+                    <th class="py-3 px-3">Tipo</th>
+                    <th class="py-3 px-3">Status</th>
+                    <th class="py-3 px-3">Total Manut.</th>
+                    <th class="py-3 px-3">Próx.</th>
+                    <th class="py-3 px-3">Venc.</th>
+                  </tr>
+                </thead>
+                <tbody id="painelResumoBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card p-6 soft-panel">
+            <h2 class="section-title mb-4">Alertas</h2>
+            <div id="painelAlertas" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5 no-print">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl border p-5"><div class="text-sm text-slate-500">Tipos de manutenção</div><div id="centralStatTiposManut" class="text-3xl font-black mt-1">0</div></div>
+            <div class="rounded-2xl border p-5"><div class="text-sm text-slate-500">Ordens de Serviço</div><div id="centralStatOS" class="text-3xl font-black mt-1">0</div></div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="section-title">Próximas Manutenções</h2>
+            <div class="text-sm muted">Data ou medidor perto do vencimento</div>
+          </div>
+          <div id="painelProximas" class="space-y-3"></div>
+        </div>
+      </section>
+
+
+      <section id="view-resumo-viaturas" class="hidden-view">
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="card p-6 lg:col-span-2">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="section-title">Resumo Operacional</h2>
+                <div class="text-sm muted mt-1">Frota consolidada, status operacional, manutenção e medidor</div>
+              </div>
+              <input id="buscaResumoViaturas" class="input max-w-xs no-print" placeholder="Buscar prefixo / modelo..." />
+            </div>
+            <div class="table-wrap">
+              <table class="w-full min-w-[920px]">
+                <thead>
+                  <tr class="text-left text-slate-500 border-b">
+                    <th class="py-3 px-3">Prefixo</th>
+                    <th class="py-3 px-3">Categoria</th>
+                    <th class="py-3 px-3">Tipo</th>
+                    <th class="py-3 px-3">Status</th>
+                    <th class="py-3 px-3">Medidor</th>
+                    <th class="py-3 px-3">Próx.</th>
+                    <th class="py-3 px-3">Venc.</th>
+                    <th class="py-3 px-3">Últ. registro</th>
+                  </tr>
+                </thead>
+                <tbody id="resumoViaturasBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card p-6 soft-panel">
+            <h2 class="text-3xl font-black mb-4">Panorama da Frota</h2>
+            <div id="resumoViaturasCards" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="section-title">Resumo da Tropa</h2>
+              <div class="text-sm muted mt-1">Condutores, mestres e pendências documentais</div>
+            </div>
+            <input id="buscaResumoTropa" class="input max-w-xs no-print" placeholder="Buscar nome / RG / CNH..." />
+          </div>
+          <div class="grid lg:grid-cols-3 gap-5">
+            <div class="card p-4 lg:col-span-1 bg-slate-50">
+              <div id="resumoCondutoresCardsInline" class="grid grid-cols-2 gap-3"></div>
+            </div>
+            <div class="lg:col-span-2">
+              <div id="listaResumoCondutoresInline" class="space-y-4"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5 no-print">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-3xl font-black">Atualização de Medidor por Imagem/Registro</h2>
+              <div class="text-sm muted mt-1">Use como apoio operacional para atualizar KM/horas da viatura ou embarcação</div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Categoria *</label>
+              <select id="auxCategoria" class="select">
+                <option value="Viatura">Viatura</option>
+                <option value="Embarcação">Embarcação</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Item *</label>
+              <select id="auxItemId" class="select"></select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Data</label>
+              <input id="auxData" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Medidor atual *</label>
+              <input id="auxMedidor" type="number" class="input" placeholder="KM ou horas" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Litros</label>
+              <input id="auxLitros" type="number" step="0.01" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Valor total</label>
+              <input id="auxValorTotal" type="number" step="0.01" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Valor por litro</label>
+              <input id="auxValorLitro" type="number" step="0.01" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Tipo de combustível</label>
+              <input id="auxCombustivel" class="input" placeholder="Diesel / Gasolina / Outro" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block mb-2 text-sm font-semibold">Observações</label>
+              <textarea id="auxObs" class="textarea" placeholder="Comprovante, livro, observações"></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4 flex flex-wrap gap-3">
+              <button id="btnSalvarMedidorAux" class="btn btn-primary">Salvar atualização de medidor</button>
+              <button id="btnLimparAux" class="btn btn-soft">Limpar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-resumo-condutores" class="hidden-view">
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="card p-6 lg:col-span-2">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-3xl font-black">Resumo de Condutores</h2>
+                <div class="text-sm muted mt-1">CNH, cursos, função operacional e área de atuação</div>
+              </div>
+              <input id="buscaResumoCondutores" class="input max-w-xs no-print" placeholder="Buscar nome / RG / CNH / matrícula..." />
+            </div>
+            <div id="listaResumoCondutores" class="space-y-4"></div>
+          </div>
+          <div class="card p-6">
+            <h2 class="text-3xl font-black mb-4">Panorama dos Condutores</h2>
+            <div id="resumoCondutoresCards" class="space-y-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-central" class="hidden-view">
+        <div class="card p-6 no-print">
+          <h2 class="section-title mb-2">Central Administrativa</h2>
+          <div class="text-sm muted mb-5">Unidade, cadastros operacionais, usuários e auditoria em um só lugar</div>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="rounded-2xl border p-5 bg-slate-50">
+              <div class="text-sm text-slate-500">Unidade</div>
+              <div class="text-2xl font-black mt-1">Configurações</div>
+              <div class="text-sm text-slate-500 mt-1">Nome, subtítulo, sigla, cor e logo</div>
+            </div>
+            <div class="rounded-2xl border p-5 bg-slate-50">
+              <div class="text-sm text-slate-500">Cadastros</div>
+              <div class="text-2xl font-black mt-1">Operacionais</div>
+              <div class="text-sm text-slate-500 mt-1">Viaturas, embarcações e condutores</div>
+            </div>
+            <div class="rounded-2xl border p-5 bg-slate-50">
+              <div class="text-sm text-slate-500">Usuários</div>
+              <div class="text-2xl font-black mt-1">Acessos</div>
+              <div class="text-sm text-slate-500 mt-1">Administrador e operador</div>
+            </div>
+            <div class="rounded-2xl border p-5 bg-slate-50">
+              <div class="text-sm text-slate-500">Histórico</div>
+              <div class="text-2xl font-black mt-1">Auditoria</div>
+              <div class="text-sm text-slate-500 mt-1">Registro de ações do sistema</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5 no-print">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Cadastros Operacionais</h2>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn btn-soft" onclick="window.switchView('viaturas')">Viaturas</button>
+              <button class="btn btn-soft" onclick="window.switchView('embarcacoes')">Embarcações</button>
+              <button class="btn btn-soft" onclick="window.switchView('motoristas')">Condutores</button>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="rounded-2xl border p-5">
+              <div class="text-sm text-slate-500">Viaturas</div>
+              <div id="centralStatViaturas" class="text-3xl font-black mt-1">0</div>
+              <div class="text-sm text-slate-500 mt-1">Cadastro e situação operacional</div>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <div class="text-sm text-slate-500">Embarcações</div>
+              <div id="centralStatEmbarcacoes" class="text-3xl font-black mt-1">0</div>
+              <div class="text-sm text-slate-500 mt-1">Motor, potência e status</div>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <div class="text-sm text-slate-500">Condutores</div>
+              <div id="centralStatCondutores" class="text-3xl font-black mt-1">0</div>
+              <div class="text-sm text-slate-500 mt-1">CNH, cursos e função</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <h2 class="text-3xl font-black mb-4">Configurações da Unidade</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Nome da unidade</label>
+              <input id="cNome" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Subtítulo</label>
+              <input id="cSubtitulo" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Sigla</label>
+              <input id="cSigla" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Cor principal</label>
+              <input id="cCor" type="color" class="input h-[54px] p-2" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Link da logo</label>
+              <input id="cLogo" class="input" placeholder="https://..." />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4 flex flex-wrap gap-3">
+              <button id="btnSalvarConfig" class="btn btn-primary">Salvar Configurações</button>
+              <button id="btnTrocarMinhaSenha" class="btn btn-soft">Trocar minha senha</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <h2 class="text-3xl font-black mb-4">Pré-visualização</h2>
+          <div class="rounded-[28px] p-6 text-white" id="previewHeader" style="background:var(--cor-primaria)">
+            <div class="flex items-center gap-4">
+              <img id="previewLogo" class="logo-box" alt="logo" />
+              <div>
+                <div id="previewNome" class="text-2xl font-black">Controle de Viaturas</div>
+                <div id="previewSubtitulo" class="text-white/85">Sistema configurável por unidade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Usuários e Acessos</h2>
+          </div>
+          <div id="listaUsuarios" class="space-y-4"></div>
+
+          <div class="divider my-5"></div>
+
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 no-print">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Nome *</label>
+              <input id="uNome" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">RG</label>
+              <input id="uRg" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Usuário *</label>
+              <input id="uLogin" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Senha *</label>
+              <input id="uSenha" type="password" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Perfil</label>
+              <select id="uPerfil" class="select">
+                <option>Operador</option>
+                <option>Administrador</option>
+              </select>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <button id="btnAddUsuario" class="btn btn-primary">Criar Usuário</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Histórico / Auditoria</h2>
+            <input id="filtroHistoricoBusca" class="input max-w-xs no-print" placeholder="Buscar no histórico..." />
+          </div>
+          <div id="listaHistorico" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-embarcacoes" class="hidden-view">
+        <div class="card p-6 no-print">
+          <h2 class="text-3xl font-black mb-4">Cadastro de Embarcação</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Prefixo / Identificação *</label>
+              <input id="ePrefixo" class="input" placeholder="Ex: BOTE-01" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Tipo *</label>
+              <input id="eTipo" class="input" placeholder="Ex: Bote inflável / Lancha" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Motor</label>
+              <input id="eMotor" class="input" placeholder="Ex: Yamaha" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Potência</label>
+              <input id="ePotencia" class="input" placeholder="Ex: 40 HP" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Status *</label>
+              <select id="eStatus" class="select">
+                <option value="OPERANDO">OPERANDO</option>
+                <option value="INOPERANTE">INOPERANTE</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Horas atuais</label>
+              <input id="eMedidorAtual" type="number" class="input" placeholder="Horas" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Observações</label>
+              <textarea id="eObs" class="textarea" placeholder="Observações da embarcação"></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Motivo da inoperância</label>
+              <input id="eMotivo" class="input" placeholder="Obrigatório se estiver INOPERANTE" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <button id="btnAddEmbarcacao" class="btn btn-primary">Salvar Embarcação</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Embarcações Cadastradas</h2>
+            <input id="filtroEmbarcacaoBusca" class="input max-w-xs no-print" placeholder="Buscar prefixo / tipo..." />
+          </div>
+          <div id="listaEmbarcacoes" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <section id="view-viaturas" class="hidden-view">
+        <div class="card p-6 no-print">
+          <h2 class="text-3xl font-black mb-4">Cadastro de Viatura</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Prefixo *</label>
+              <input id="vPrefixo" class="input" placeholder="Ex: ABT-076" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Tipo *</label>
+              <select id="vTipo" class="select">
+                <option value="Terrestre">Terrestre</option>
+                <option value="Náutica">Náutica</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Descrição</label>
+              <input id="vDescricao" class="input" placeholder="Ex: Auto Bomba Tanque" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Placa/Identificador</label>
+              <input id="vPlaca" class="input" placeholder="Opcional" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Marca/Modelo</label>
+              <input id="vModelo" class="input" placeholder="Ex: Mercedes Atego" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Setor/Guarnição</label>
+              <input id="vSetor" class="input" placeholder="Ex: Prontidão" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Status *</label>
+              <select id="vStatus" class="select">
+                <option value="OPERANDO">OPERANDO</option>
+                <option value="INOPERANTE">INOPERANTE</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">KM/Hora atual</label>
+              <input id="vMedidorAtual" type="number" class="input" placeholder="Ex: 15200" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Motivo da inoperância</label>
+              <input id="vMotivo" class="input" placeholder="Obrigatório se status for INOPERANTE" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <button id="btnAddViatura" class="btn btn-primary">Salvar Viatura</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Viaturas Cadastradas</h2>
+            <div class="flex gap-3 flex-wrap no-print">
+              <input id="filtroViaturaBusca" class="input max-w-xs" placeholder="Buscar prefixo/modelo..." />
+              <select id="filtroViaturaTipo" class="select max-w-xs">
+                <option value="">Todos os tipos</option>
+                <option value="Terrestre">Terrestre</option>
+                <option value="Náutica">Náutica</option>
+              </select>
+              <select id="filtroViaturaStatus" class="select max-w-xs">
+                <option value="">Todos os status</option>
+                <option value="OPERANDO">OPERANDO</option>
+                <option value="INOPERANTE">INOPERANTE</option>
+              </select>
+            </div>
+          </div>
+          <div id="listaViaturas" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <section id="view-manutencoes" class="hidden-view">
+        <div class="card p-6 no-print">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-3xl font-black">Ordens de Serviço</h2>
+              <div class="text-sm muted mt-1">Acompanhe abertura, agendamento, retorno e conclusão sem tirar a OS da manutenção</div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Item *</label>
+              <select id="osItemId" class="select"></select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Tipo do problema / serviço *</label>
+              <input id="osTipo" class="input" placeholder="Ex: Freio, elétrica, casco..." />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Status *</label>
+              <select id="osStatus" class="select">
+                <option value="aberta">Aberta</option>
+                <option value="agendada">Agendada</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Responsável *</label>
+              <input id="osResponsavel" class="input" list="listaResponsaveisOS" placeholder="Quem abriu / acompanha" />
+              <datalist id="listaResponsaveisOS"></datalist>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <button type="button" class="btn btn-soft" onclick="window.setPatenteOS('Sub')">Sub</button>
+                <button type="button" class="btn btn-soft" onclick="window.setPatenteOS('Sgt')">Sgt</button>
+                <button type="button" class="btn btn-soft" onclick="window.setPatenteOS('Cb')">Cb</button>
+                <button type="button" class="btn btn-soft" onclick="window.setPatenteOS('Sd')">Sd</button>
+                <button type="button" class="btn btn-soft" onclick="window.usarUltimoResponsavelOS()">Usar último</button>
+              </div>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Data de abertura *</label>
+              <input id="osDataAbertura" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Data agendada</label>
+              <input id="osDataAgendada" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Data de conclusão</label>
+              <input id="osDataConclusao" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Local / oficina</label>
+              <input id="osLocal" class="input" placeholder="Ex: oficina, fornecedor..." />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Descrição da OS *</label>
+              <textarea id="osDescricao" class="textarea" placeholder="Descreva o defeito, a pendência ou o serviço necessário."></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Observações</label>
+              <textarea id="osObs" class="textarea" placeholder="Retorno, peças, prioridade, observações adicionais"></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4 flex flex-wrap gap-3">
+              <button id="btnAddOS" class="btn btn-primary">Salvar Ordem de Serviço</button>
+              <button id="btnLimparOS" class="btn btn-soft">Limpar OS</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">OS em andamento</h2>
+            <div class="flex gap-3 flex-wrap no-print">
+              <input id="filtroOSBusca" class="input max-w-xs" placeholder="Buscar item/tipo..." />
+              <select id="filtroOSStatus" class="select max-w-xs">
+                <option value="">Todos os status</option>
+                <option value="aberta">Aberta</option>
+                <option value="agendada">Agendada</option>
+                <option value="atrasada">Atrasada</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+          </div>
+          <div id="listaOS" class="space-y-4"></div>
+        </div>
+
+        <div class="card p-6 mt-5 no-print">
+          <h2 class="section-title mb-4">Cadastro de Manutenção</h2>
+          <input id="mLinkedOSId" type="hidden" />
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Item *</label>
+              <select id="mViatura" class="select"></select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Tipo de manutenção *</label>
+              <select id="mTipo" class="select"></select>
+            </div>
+            <div class="md:col-span-2">
+              <div id="novoTipoContainer" class="hidden">
+                <label class="block mb-2 text-sm font-semibold">Novo tipo de manutenção</label>
+                <div class="grid md:grid-cols-2 gap-3">
+                  <input id="novoTipoNome" class="input" placeholder="Ex: Bomba hidráulica, solda, vedação..." />
+                  <input id="novoTipoDescricao" class="input" placeholder="Descrição curta do novo tipo" />
+                </div>
+                <div class="text-xs text-slate-500 mt-2">Qualquer militar pode criar novo tipo ao lançar a manutenção. Só administrador pode excluir depois.</div>
+              </div>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Data *</label>
+              <input id="mData" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Responsável *</label>
+              <input id="mResponsavel" class="input" placeholder="Nome do responsável" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Medidor na manutenção</label>
+              <input id="mMedidor" type="number" class="input" placeholder="KM ou horas" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Periodicidade por medidor</label>
+              <input id="mPeriodicidadeMedidor" type="number" class="input" placeholder="Ex: 5000 ou 100" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Periodicidade em meses</label>
+              <input id="mPeriodicidadeMeses" type="number" class="input" placeholder="Ex: 6" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Medidor atual do item</label>
+              <input id="mMedidorAtual" type="number" class="input" placeholder="Atual" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Descrição do serviço</label>
+              <input id="mDescricao" class="input" placeholder="Descreva o serviço executado" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Observações</label>
+              <textarea id="mObs" class="textarea" placeholder="Observações adicionais"></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4 flex flex-wrap gap-3">
+              <button id="btnAddManut" class="btn btn-primary">Salvar Manutenção</button>
+              <button id="btnLimparManutVinculo" class="btn btn-soft">Limpar vínculo de OS</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="section-title">Manutenções Cadastradas</h2>
+            <div class="flex gap-3 flex-wrap no-print">
+              <input id="filtroManutBusca" class="input max-w-xs" placeholder="Buscar item/tipo..." />
+              <select id="filtroManutStatus" class="select max-w-xs">
+                <option value="">Todos os status</option>
+                <option value="ok">Em dia</option>
+                <option value="proxima">Próxima</option>
+                <option value="vencida">Vencida</option>
+              </select>
+            </div>
+          </div>
+          <div id="listaManut" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <section id="view-motoristas" class="hidden-view">
+        <div class="card p-6 no-print">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-3xl font-black">Cadastro de Condutor</h2>
+              <div class="text-sm muted mt-1">Com captura de foto do livro e envio rápido pelo WhatsApp</div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Nome *</label>
+              <input id="motNome" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">RG</label>
+              <input id="motRg" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Matrícula</label>
+              <input id="motMatricula" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">CNH</label>
+              <input id="motCnh" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Categoria</label>
+              <input id="motCategoria" class="input" placeholder="Ex: AB / D / E" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Validade CNH</label>
+              <input id="motValidade" type="date" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Telefone/WhatsApp</label>
+              <input id="motWhatsapp" class="input" placeholder="55DDDNUMERO" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Função operacional</label>
+              <select id="motFuncao" class="select">
+                <option>Condutor e operador de viatura</option>
+                <option>Mestre de embarcação</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Área de atuação</label>
+              <select id="motArea" class="select">
+                <option>Terrestre</option>
+                <option>Náutica</option>
+                <option>Ambos</option>
+              </select>
+            </div>
+            <div class="md:col-span-2 xl:col-span-2">
+              <label class="block mb-2 text-sm font-semibold">Observações</label>
+              <textarea id="motObs" class="textarea" placeholder="Observações gerais"></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-2">
+              <label class="block mb-2 text-sm font-semibold">Texto extraído / conferência manual</label>
+              <textarea id="motTextoExtraido" class="textarea" placeholder="Cole aqui o texto do livro, caso queira registrar."></textarea>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Cursos e vencimentos</label>
+              <div class="grid md:grid-cols-[2fr,1fr,auto] gap-2">
+                <input id="motCursoNome" class="input" placeholder="Nome do curso" />
+                <input id="motCursoValidade" type="date" class="input" />
+                <button id="btnAddCursoCondutor" type="button" class="btn btn-soft">Adicionar</button>
+              </div>
+              <div id="listaCursosTemp" class="mt-3 space-y-2"></div>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block mb-2 text-sm font-semibold">Foto do livro / registro do condutor</label>
+              <input id="motFoto" type="file" accept="image/*" capture="environment" class="input" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block mb-2 text-sm font-semibold">Pré-visualização</label>
+              <img id="motPreview" class="thumb" alt="Prévia da foto" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4 flex flex-wrap gap-3">
+              <button id="btnAddMotorista" class="btn btn-primary">Salvar Condutor</button>
+              <button id="btnLimparFotoMotorista" class="btn btn-soft">Limpar Foto</button>
+              <button id="btnAjudaIA" class="btn btn-soft">Como ativar leitura por imagem depois</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Condutores Cadastrados</h2>
+            <div class="flex gap-3 flex-wrap no-print">
+              <input id="filtroMotoristaBusca" class="input max-w-xs" placeholder="Buscar nome / RG / CNH / matrícula..." />
+            </div>
+          </div>
+          <div id="listaMotoristas" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <section id="view-relatorios" class="hidden-view">
+        <div class="grid lg:grid-cols-2 gap-5">
+          <div class="card p-6">
+            <h2 class="text-3xl font-black mb-4">Relatório Operacional da Unidade</h2>
+            <div id="relatorioResumo" class="space-y-3"></div>
+          </div>
+          <div class="card p-6 no-print">
+            <h2 class="text-3xl font-black mb-4">Ações</h2>
+            <div class="grid gap-3">
+              <button id="btnPrintRelatorio" class="btn btn-primary">Imprimir relatório</button>
+              <button id="btnBackup" class="btn btn-soft">Baixar backup JSON</button>
+              <button id="btnWhatsRelatorio" class="btn btn-wa">Enviar resumo no WhatsApp</button>
+              <label class="btn btn-soft text-center cursor-pointer">
+                Restaurar backup JSON
+                <input id="restoreInput" type="file" accept=".json,application/json" class="hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <h2 class="text-3xl font-black mb-4">Viaturas Inoperantes</h2>
+          <div id="relatorioInoperantes" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-historico-legacy" class="hidden-view">
+        <div class="card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-3xl font-black">Histórico do Sistema</h2>
+            <input id="filtroHistoricoBusca" class="input max-w-xs no-print" placeholder="Buscar no histórico..." />
+          </div>
+          <div id="listaHistorico" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-usuarios-legacy" class="hidden-view">
+        <div class="card p-6">
+          <h2 class="text-3xl font-black mb-4">Usuários do Sistema</h2>
+          <div id="listaUsuarios" class="space-y-4"></div>
+        </div>
+
+        <div class="card p-6 mt-5 no-print">
+          <h2 class="text-3xl font-black mb-4">Criar Novo Usuário</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Nome *</label>
+              <input id="uNome" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">RG</label>
+              <input id="uRg" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Usuário *</label>
+              <input id="uLogin" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Senha *</label>
+              <input id="uSenha" type="password" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Perfil</label>
+              <select id="uPerfil" class="select">
+                <option>Operador</option>
+                <option>Administrador</option>
+              </select>
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <button id="btnAddUsuario" class="btn btn-primary">Criar Usuário</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-configuracoes-legacy" class="hidden-view">
+        <div class="card p-6 no-print">
+          <h2 class="text-3xl font-black mb-4">Configurações da Unidade</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Nome da unidade</label>
+              <input id="cNome" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Subtítulo</label>
+              <input id="cSubtitulo" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Sigla</label>
+              <input id="cSigla" class="input" />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-semibold">Cor principal</label>
+              <input id="cCor" type="color" class="input h-[54px] p-2" />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <label class="block mb-2 text-sm font-semibold">Link da logo</label>
+              <input id="cLogo" class="input" placeholder="https://..." />
+            </div>
+            <div class="md:col-span-2 xl:col-span-4">
+              <button id="btnSalvarConfig" class="btn btn-primary">Salvar Configurações</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 mt-5">
+          <h2 class="text-3xl font-black mb-4">Pré-visualização</h2>
+          <div class="rounded-[28px] p-6 text-white" id="previewHeader" style="background:var(--cor-primaria)">
+            <div class="flex items-center gap-4">
+              <img id="previewLogo" class="logo-box" alt="logo" />
+              <div>
+                <div id="previewNome" class="text-2xl font-black">Controle de Viaturas</div>
+                <div id="previewSubtitulo" class="text-white/85">Sistema configurável por unidade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+      onSnapshot, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9QSgkaYuEzoKbfghQfsPyphoqR918PZw",
+      authDomain: "sistema-dbm5m.firebaseapp.com",
+      projectId: "sistema-dbm5m",
+      storageBucket: "sistema-dbm5m.firebasestorage.app",
+      messagingSenderId: "60415448849",
+      appId: "1:60415448849:web:45b8e8a6bb3af43c695eb0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const CONFIG_DOC = doc(db, "cv_config", "geral");
+    const USERS_COL = collection(db, "cv_users");
+    const VIATURAS_COL = collection(db, "cv_viaturas");
+    const MANUT_COL = collection(db, "cv_manutencoes");
+    const OS_COL = collection(db, "cv_ordens_servico");
+    const TIPOSMANUT_COL = collection(db, "cv_tipos_manutencao");
+    const HIST_COL = collection(db, "cv_historico");
+    const MOTORISTAS_COL = collection(db, "cv_motoristas");
+    const EMBARCACOES_COL = collection(db, "cv_embarcacoes");
+    const MED_AUX_COL = collection(db, "cv_medidores_aux");
+
+    const state = {
+      loading: true,
+      config: {
+        nome: "Controle de Viaturas",
+        subtitulo: "Sistema configurável para uso interno por unidade",
+        sigla: "UNIDADE",
+        cor: "#9f0712",
+        logoUrl: ""
+      },
+      usuario: null,
+      users: [],
+      viaturas: [],
+      manutencoes: [],
+      ordensServico: [],
+      tiposManutencao: [],
+      historico: [],
+      motoristas: [],
+      embarcacoes: [],
+      medidoresAux: [],
+      motoristaFotoDataUrl: "",
+      medidorFotoDataUrl: "",
+      cursosTemp: []
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const onSafe = (id, evt, fn) => { const el = $(id); if (el) el.addEventListener(evt, fn); };
+
+    function getResponsaveisOSSalvos(){
+      try{
+        const dados = JSON.parse(localStorage.getItem("responsaveisOS") || "[]");
+        return Array.isArray(dados) ? dados.filter(Boolean) : [];
+      }catch(e){
+        return [];
+      }
+    }
+
+    function salvarResponsavelOS(nome){
+      const valor = (nome || "").trim();
+      if(!valor) return;
+      const atuais = getResponsaveisOSSalvos().filter(v => v.toLowerCase() !== valor.toLowerCase());
+      atuais.unshift(valor);
+      localStorage.setItem("responsaveisOS", JSON.stringify(atuais.slice(0, 30)));
+      preencherDatalistResponsaveisOS();
+    }
+
+    function preencherDatalistResponsaveisOS(){
+      const lista = $("listaResponsaveisOS");
+      if(!lista) return;
+      const nomes = getResponsaveisOSSalvos();
+      lista.innerHTML = nomes.map(n => `<option value="${String(n).replace(/"/g, '&quot;')}"></option>`).join("");
+    }
+
+    window.usarUltimoResponsavelOS = function(){
+      const campo = $("osResponsavel");
+      if(!campo) return;
+      const nomes = getResponsaveisOSSalvos();
+      if(!nomes.length){
+        toast("Ainda não existe responsável salvo.");
+        return;
+      }
+      campo.value = nomes[0];
+      campo.focus();
+    }
+
+    window.setPatenteOS = function(patente){
+      const campo = $("osResponsavel");
+      if(!campo) return;
+      const atual = (campo.value || "").trim();
+      const semPatente = atual.replace(/^(Sub|Sgt|Cb|Sd)\s+/i, "").trim();
+      campo.value = semPatente ? `${patente} ${semPatente}` : `${patente} `;
+      campo.focus();
+    }
+
+
+    function toast(msg){
+      const t = document.createElement("div");
+      t.className = "fixed top-4 right-4 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl font-semibold";
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 2800);
+    }
+
+    function logoFallback(){
+      return "data:image/svg+xml;utf8," + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+          <rect width="100%" height="100%" rx="24" fill="#ffffff"/>
+          <text x="50%" y="54%" text-anchor="middle" font-size="24" font-family="Arial" fill="#9f0712">LOGO</text>
+        </svg>
+      `);
+    }
+
+    
+    function painelAlertCard({nivel="info", titulo="", detalhe="", acaoLabel="", acaoView=""}){
+      const temas = {
+        critico: {
+          box: "border-rose-200 bg-rose-50",
+          title: "text-rose-700",
+          detail: "text-rose-700/90",
+          btn: "background:#fff;color:#be123c;border:1px solid #fecdd3"
+        },
+        atencao: {
+          box: "border-amber-200 bg-amber-50",
+          title: "text-amber-700",
+          detail: "text-amber-700/90",
+          btn: "background:#fff;color:#b45309;border:1px solid #fde68a"
+        },
+        apoio: {
+          box: "border-slate-200 bg-slate-50",
+          title: "text-slate-700",
+          detail: "text-slate-600",
+          btn: "background:#fff;color:#334155;border:1px solid #cbd5e1"
+        },
+        ok: {
+          box: "border-emerald-200 bg-emerald-50",
+          title: "text-emerald-700",
+          detail: "text-emerald-700/90",
+          btn: "background:#fff;color:#15803d;border:1px solid #bbf7d0"
+        }
+      };
+      const t = temas[nivel] || temas.apoio;
+      return `
+        <div class="alert-card ${t.box}">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="font-black ${t.title}">${titulo}</div>
+              <div class="text-sm mt-1 ${t.detail}">${detalhe}</div>
+            </div>
+            ${acaoLabel && acaoView ? `<button type="button" class="btn btn-soft no-print" style="${t.btn}" onclick="window.switchView('${acaoView}')">${acaoLabel}</button>` : ``}
+          </div>
+        </div>
+      `;
+    }
+
+
+    function darkenColor(hex, amount = 20){
+      hex = (hex || "#9f0712").replace("#","");
+      const num = parseInt(hex,16);
+      let r = (num >> 16) - amount;
+      let g = ((num >> 8) & 0xff) - amount;
+      let b = (num & 0xff) - amount;
+      r = Math.max(0,r); g = Math.max(0,g); b = Math.max(0,b);
+      return "#" + ((r << 16) | (g << 8) | b).toString(16).padStart(6,"0");
+    }
+
+    function formatDateBR(dateStr){
+      if(!dateStr) return "-";
+      const d = new Date(dateStr + "T12:00:00");
+      return d.toLocaleDateString("pt-BR");
+    }
+
+    function formatDateTime(ms){
+      if(!ms) return "-";
+      return new Date(ms).toLocaleString("pt-BR");
+    }
+
+    async function sha256(text){
+      const data = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function addMonths(dateStr, months){
+      if(!dateStr || !months) return null;
+      const d = new Date(dateStr + "T12:00:00");
+      d.setMonth(d.getMonth() + Number(months));
+      return d.toISOString().slice(0,10);
+    }
+
+    function isAdmin(){
+      return (state.usuario?.perfil || "").toString().trim().toLowerCase() === "administrador";
+    }
+
+    function currentLogo(){
+      return state.config.logoUrl?.trim() ? state.config.logoUrl.trim() : logoFallback();
+    }
+
+    function setBranding(){
+      const cor = state.config.cor || "#9f0712";
+      document.documentElement.style.setProperty("--cor-primaria", cor);
+      document.documentElement.style.setProperty("--cor-primaria-escura", darkenColor(cor));
+
+      const logo = currentLogo();
+
+      $("coverLogo").src = logo;
+      $("loginLogo").src = logo;
+      $("headerLogo").src = logo;
+      $("previewLogo").src = logo;
+
+      $("coverTitle").textContent = state.config.nome || "Controle de Viaturas";
+      $("coverSubtitle").textContent = state.config.subtitulo || "";
+      $("coverSigla").textContent = state.config.sigla || "UNIDADE";
+
+      $("loginTitle").textContent = state.config.nome || "Controle de Viaturas";
+      $("loginSubtitle").textContent = state.config.subtitulo || "";
+
+      $("headerTitle").textContent = state.config.nome || "Controle de Viaturas";
+      $("headerSubtitle").textContent = state.config.subtitulo || "";
+
+      $("previewNome").textContent = state.config.nome || "Controle de Viaturas";
+      $("previewSubtitulo").textContent = state.config.subtitulo || "";
+
+      $("loginHeader").style.background = cor;
+      $("previewHeader").style.background = cor;
+
+      $("cNome").value = state.config.nome || "";
+      $("cSubtitulo").value = state.config.subtitulo || "";
+      $("cSigla").value = state.config.sigla || "";
+      $("cCor").value = state.config.cor || "#9f0712";
+      $("cLogo").value = state.config.logoUrl || "";
+
+      if (!$("motPreview").src) $("motPreview").src = logoFallback();
+    }
+
+    function showScreen(name){
+      ["loadingScreen","coverScreen","loginScreen","appScreen"].forEach(id => $(id).classList.add("hidden"));
+      $(name).classList.remove("hidden");
+    }
+
+    function ensureLogged(){
+      if(state.loading){
+        showScreen("loadingScreen");
+        return;
+      }
+      if(!state.usuario){
+        showScreen("coverScreen");
+      }else{
+        showScreen("appScreen");
+        $("sessionNome").textContent = state.usuario.nome;
+      }
+    }
+
+    window.switchView = function switchView(view){
+      if(view === "central" && !isAdmin()){
+        view = "painel";
+      }
+      document.querySelectorAll("[id^='view-']").forEach(el => el.classList.add("hidden-view"));
+      $("view-" + view).classList.remove("hidden-view");
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.remove("active");
+        if(btn.dataset.view === view) btn.classList.add("active");
+      });
+    }
+
+    function getStatusBadge(status){
+      if(status === "INOPERANTE"){
+        return `<span class="badge bg-rose-100 text-rose-700">INOPERANTE</span>`;
+      }
+      return `<span class="badge bg-emerald-100 text-emerald-700">OPERANDO</span>`;
+    }
+
+    function statusManut(m){
+      const hoje = new Date();
+      hoje.setHours(0,0,0,0);
+      let vencida = false;
+      let proxima = false;
+
+      if(m.proximaData){
+        const d = new Date(m.proximaData + "T12:00:00");
+        const diffDias = Math.ceil((d - hoje)/(1000*60*60*24));
+        if(diffDias < 0) vencida = true;
+        else if(diffDias <= 30) proxima = true;
+      }
+
+      if(m.proximoMedidor && (m.medidorAtual || m.medidorAtual === 0)){
+        const restante = Number(m.proximoMedidor) - Number(m.medidorAtual);
+        if(restante < 0) vencida = true;
+        else if(restante <= 500) proxima = true;
+      }
+
+      if(vencida) return "vencida";
+      if(proxima) return "proxima";
+      return "ok";
+    }
+
+    function manutBadge(status){
+      if(status === "vencida") return `<span class="badge bg-rose-100 text-rose-700">VENCIDA</span>`;
+      if(status === "proxima") return `<span class="badge bg-amber-100 text-amber-700">PRÓXIMA</span>`;
+      return `<span class="badge bg-emerald-100 text-emerald-700">EM DIA</span>`;
+    }
+
+    function buildResumoWhatsApp(){
+      const total = state.viaturas.length;
+      const operando = state.viaturas.filter(v => v.status === "OPERANDO").length;
+      const inoperante = state.viaturas.filter(v => v.status === "INOPERANTE").length;
+      const prox = state.manutencoes.filter(m => statusManut(m) === "proxima").length;
+      const venc = state.manutencoes.filter(m => statusManut(m) === "vencida").length;
+      const osAbertas = state.ordensServico.filter(o => statusOS(o) === "aberta").length;
+      const osAtrasadas = state.ordensServico.filter(o => statusOS(o) === "atrasada").length;
+
+      const linhasViaturas = state.viaturas
+        .sort((a,b) => (a.prefixo || "").localeCompare(b.prefixo || ""))
+        .map(v => `• ${v.prefixo} | ${v.tipo} | ${v.status}${v.motivoInoperancia ? " | Motivo: " + v.motivoInoperancia : ""}`)
+        .join("\n");
+
+      return [
+        `*${state.config.nome || "Controle de Viaturas"}*`,
+        `${state.config.subtitulo || ""}`,
+        ``,
+        `*Resumo da frota*`,
+        `Viaturas: ${total}`,
+        `Operando: ${operando}`,
+        `Inoperante: ${inoperante}`,
+        `Próximas manutenções: ${prox}`,
+        `Manutenções vencidas: ${venc}`,
+        `OS abertas: ${osAbertas}`,
+        `OS atrasadas: ${osAtrasadas}`,
+        ``,
+        `*Viaturas cadastradas*`,
+        linhasViaturas || "Nenhuma viatura cadastrada."
+      ].join("\n");
+    }
+
+    function enviarWhatsApp(texto, numero = ""){
+      const numeroLimpo = String(numero || "").replace(/\D/g, "");
+      const base = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "https://wa.me/";
+      const url = `${base}?text=${encodeURIComponent(texto)}`;
+      window.open(url, "_blank");
+    }
+
+    function motoristaValidadeStatus(m){
+      if(!m.validadeCnh) return "sem-data";
+      const hoje = new Date();
+      hoje.setHours(0,0,0,0);
+      const d = new Date(m.validadeCnh + "T12:00:00");
+      const diffDias = Math.ceil((d - hoje)/(1000*60*60*24));
+      if(diffDias < 0) return "vencida";
+      if(diffDias <= 30) return "proxima";
+      return "ok";
+    }
+
+    function badgeValidade(status){
+      if(status === "vencida") return `<span class="badge bg-rose-100 text-rose-700">CNH VENCIDA</span>`;
+      if(status === "proxima") return `<span class="badge bg-amber-100 text-amber-700">CNH PRÓXIMA</span>`;
+      if(status === "sem-data") return `<span class="badge bg-slate-100 text-slate-700">SEM VALIDADE</span>`;
+      return `<span class="badge bg-emerald-100 text-emerald-700">CNH EM DIA</span>`;
+    }
+
+
+    function frotaCompleta(){
+      return [
+        ...state.viaturas.map(v => ({...v, categoriaOperacional: "Viatura", colecao: "cv_viaturas"})),
+        ...state.embarcacoes.map(e => ({...e, categoriaOperacional: "Embarcação", colecao: "cv_embarcacoes"}))
+      ];
+    }
+
+    function findFrotaItem(id){
+      return frotaCompleta().find(x => x.id === id);
+    }
+
+    function diasDesde(ms){
+      if(!ms) return null;
+      return Math.floor((Date.now() - Number(ms)) / (1000*60*60*24));
+    }
+
+    function daysUntil(dateStr){
+      if(!dateStr) return null;
+      const today = new Date(); today.setHours(0,0,0,0);
+      const d = new Date(dateStr + "T12:00:00");
+      return Math.ceil((d - today) / (1000*60*60*24));
+    }
+
+    function cursoStatus(curso){
+      const dias = daysUntil(curso?.validade);
+      if(dias === null) return "ok";
+      if(dias < 0) return "vencida";
+      if(dias <= 30) return "proxima";
+      return "ok";
+    }
+
+
+    function normSpaces(text){
+      return (text || "").replace(/[\t\r]+/g, " ").replace(/ +/g, " ").trim();
+    }
+
+    function extractDate(text){
+      const m = text.match(/(\b\d{2}[\/\-]\d{2}[\/\-]\d{2,4}\b)/);
+      if(!m) return "";
+      const p = m[1].replace(/-/g, "/").split("/");
+      let [d, mo, y] = p;
+      if(y.length === 2) y = "20" + y;
+      return `${y}-${mo.padStart(2,"0")}-${d.padStart(2,"0")}`;
+    }
+
+    function extractNumberAfterLabel(text, labels, decimal=false){
+      for(const label of labels){
+        const rgx = new RegExp(label + String.raw`\s*[:\-]?\s*(\d+[\.,]?\d*)`, "i");
+        const m = text.match(rgx);
+        if(m){
+          return m[1].replace(",", ".");
+        }
+      }
+      return "";
+    }
+
+    function preencherCondutorPorTexto(textoBruto){
+      const texto = normSpaces(textoBruto);
+      if(!texto) return false;
+
+      const nomeMatch = texto.match(/(?:nome|condutor|motorista)\s*[:\-]?\s*([A-ZÀ-Ú][A-ZÀ-Ú\s]{5,})/i);
+      const rgMatch = texto.match(/\bRG\s*[:\-]?\s*([\d\.\-\/]+)/i);
+      const cnhMatch = texto.match(/\bCNH\s*[:\-]?\s*([\d]+)/i);
+      const catMatch = texto.match(/(?:categoria|cat\.)\s*[:\-]?\s*([A-E]{1,2})\b/i);
+      const validadeMatch = texto.match(/(?:validade|vencto|vencimento)\s*[:\-]?\s*(\d{2}[\/\-]\d{2}[\/\-]\d{2,4})/i);
+
+      if(nomeMatch) $("motNome").value = normSpaces(nomeMatch[1]);
+      if(rgMatch) $("motRg").value = rgMatch[1];
+      if(cnhMatch) $("motCnh").value = cnhMatch[1];
+      if(catMatch) $("motCategoria").value = catMatch[1].toUpperCase();
+      if(validadeMatch) $("motValidade").value = extractDate(validadeMatch[1]);
+      $("motTextoExtraido").value = textoBruto;
+      return Boolean(nomeMatch || rgMatch || cnhMatch || catMatch || validadeMatch);
+    }
+
+    function preencherComprovantePorTexto(textoBruto){
+      const texto = normSpaces(textoBruto);
+      if(!texto) return false;
+
+      const data = extractDate(texto);
+      const medidor = extractNumberAfterLabel(texto, ["km", "hod[oô]metro", "od[oô]metro", "medidor", "horas"]);
+      const litros = extractNumberAfterLabel(texto, ["litros", "l", "quantidade"]);
+      const valorTotal = extractNumberAfterLabel(texto, ["valor total", "total", "r\$"]);
+      const valorLitro = extractNumberAfterLabel(texto, ["valor litro", "vl\/l", "pre[cç]o litro", "unit[áa]rio"]);
+      const combustivelMatch = texto.match(/(diesel s10|diesel|gasolina|etanol|gnv|mar[íi]timo)/i);
+
+      if(data) $("auxData").value = data;
+      if(medidor) $("auxMedidor").value = medidor;
+      if(litros) $("auxLitros").value = litros;
+      if(valorTotal) $("auxValorTotal").value = valorTotal;
+      if(valorLitro) $("auxValorLitro").value = valorLitro;
+      if(combustivelMatch) $("auxCombustivel").value = combustivelMatch[1];
+      $("auxTexto").value = textoBruto;
+      return Boolean(data || medidor || litros || valorTotal || valorLitro || combustivelMatch);
+    }
+
+    function renderCursosTemp(){
+      const box = $("listaCursosTemp");
+      if(!box) return;
+      if(!state.cursosTemp.length){
+        box.innerHTML = `<div class="text-sm text-slate-500">Nenhum curso adicionado.</div>`;
+        return;
+      }
+      box.innerHTML = state.cursosTemp.map((c, i) => `
+        <div class="rounded-2xl border p-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="font-black">${c.nome}</div>
+            <div class="text-sm text-slate-500">Validade: ${formatDateBR(c.validade)}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            ${badgeValidade(cursoStatus(c))}
+            <button class="btn btn-danger" type="button" onclick="window.removerCursoTemp(${i})">Remover</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function preencherSelectAuxItem(){
+      const select = $("auxItemId");
+      if(!select) return;
+      const categoria = $("auxCategoria")?.value || "Viatura";
+      const itens = categoria === "Embarcação" ? state.embarcacoes : state.viaturas;
+      select.innerHTML = `<option value="">Selecione</option>` + itens
+        .sort((a,b)=>(a.prefixo||"").localeCompare(b.prefixo||""))
+        .map(v => `<option value="${v.id}">${v.prefixo} - ${v.tipo || v.motor || ""}</option>`)
+        .join("");
+    }
+
+
+    function controlarPermissoesTela(){
+      const admin = isAdmin();
+
+      document.querySelectorAll('[data-view="central"]').forEach(el => {
+        el.style.display = admin ? "" : "none";
+      });
+
+      document.querySelectorAll(".only-admin").forEach(el => {
+        el.style.display = admin ? "" : "none";
+      });
+
+      const viewCentral = $("view-central");
+      if(viewCentral){
+        if(admin){
+          viewCentral.classList.add("hidden-view");
+          viewCentral.style.display = "";
+        } else {
+          viewCentral.classList.add("hidden-view");
+          viewCentral.style.display = "none";
+        }
+      }
+    }
+
+    function tiposManutPadrao(){
+      return [
+        "Troca de óleo","Revisão","Freio","Pneu","Bateria","Motor","Elétrica","Preventiva","Corretiva","Docagem","Casco"
+      ];
+    }
+
+    function listaTiposManutCombinada(){
+      const dinamicos = (state.tiposManutencao || [])
+        .filter(t => t.ativo !== false)
+        .map(t => ({ nome: t.nome, descricao: t.descricao || "", origem: "dinamico", id: t.id, criadoPor: t.criadoPor || "" }));
+      const nomesDinamicos = new Set(dinamicos.map(t => (t.nome || "").toLowerCase()));
+      const padroes = tiposManutPadrao()
+        .filter(n => !nomesDinamicos.has(n.toLowerCase()))
+        .map(n => ({ nome: n, descricao: "", origem: "padrao" }));
+      return [...padroes, ...dinamicos].sort((a,b)=>(a.nome || "").localeCompare(b.nome || ""));
+    }
+
+    function preencherSelectTiposManut(){
+      const select = $("mTipo");
+      if(!select) return;
+      const valorAtual = select.value || "";
+      const tipos = listaTiposManutCombinada();
+      select.innerHTML = `<option value="">Selecione</option>` +
+        tipos.map(t => `<option value="${t.nome}">${t.nome}</option>`).join("") +
+        `<option value="__novo__">Outro / Novo tipo</option>`;
+      if([...select.options].some(o => o.value === valorAtual)) select.value = valorAtual;
+      const box = $("novoTipoContainer");
+      if(box) box.classList.toggle("hidden", select.value !== "__novo__");
+    }
+
+    function renderTiposManut(){
+      preencherSelectTiposManut();
+      const lista = $("listaTiposManut");
+      if(!lista) return;
+      const tipos = listaTiposManutCombinada();
+      if(!tipos.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-6">Nenhum tipo disponível</div>`;
+        return;
+      }
+      lista.innerHTML = tipos.map(t => `
+        <div class="border rounded-2xl p-4 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div class="font-black text-lg">${t.nome}</div>
+            <div class="text-sm text-slate-500 mt-1">${t.descricao || "Sem descrição"}</div>
+            <div class="text-xs text-slate-400 mt-1">Origem: ${t.origem === "padrao" ? "Padrão do sistema" : `Criado por ${t.criadoPor || "usuário"}`}</div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            ${t.origem === "padrao" ? `<span class="badge bg-slate-100 text-slate-700">Padrão</span>` : `<span class="badge bg-amber-100 text-amber-700">Dinâmico</span>`}
+            ${isAdmin() && t.origem === "dinamico" ? `<button class="btn btn-danger" onclick="window.excluirTipoManut('${t.id}')">Excluir</button>` : ``}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function statusOS(os){
+      if((os.status || "") === "cancelada") return "cancelada";
+      if((os.status || "") === "concluida") return "concluida";
+      if((os.status || "") === "agendada" && os.dataAgendada){
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        const d = new Date(os.dataAgendada + "T12:00:00");
+        if(d < hoje) return "atrasada";
+      }
+      return os.status || "aberta";
+    }
+
+    function badgeOS(status){
+      if(status === "atrasada") return `<span class="badge bg-rose-100 text-rose-700">ATRASADA</span>`;
+      if(status === "agendada") return `<span class="badge bg-amber-100 text-amber-700">AGENDADA</span>`;
+      if(status === "concluida") return `<span class="badge bg-emerald-100 text-emerald-700">CONCLUÍDA</span>`;
+      if(status === "cancelada") return `<span class="badge bg-slate-100 text-slate-700">CANCELADA</span>`;
+      return `<span class="badge bg-red-100 text-red-700">ABERTA</span>`;
+    }
+
+    function preencherSelectOSItens(){
+      const select = $("osItemId");
+      if(!select) return;
+      const valorAtual = select.value || "";
+      const itens = frotaCompleta().sort((a,b)=>(a.prefixo || "").localeCompare(b.prefixo || ""));
+      select.innerHTML = `<option value="">Selecione</option>` + itens.map(v => `<option value="${v.id}">${v.prefixo} - ${v.categoriaOperacional}</option>`).join("");
+      if([...select.options].some(o => o.value === valorAtual)) select.value = valorAtual;
+    }
+
+    function limparFormularioOS(){
+      ["osTipo","osResponsavel","osDataAbertura","osDataAgendada","osDataConclusao","osLocal","osDescricao","osObs"].forEach(id => { if($(id)) $(id).value = ""; });
+      if($("osStatus")) $("osStatus").value = "aberta";
+      if($("osItemId")) $("osItemId").value = "";
+      if($("osDataAbertura")) $("osDataAbertura").value = new Date().toISOString().slice(0,10);
+    }
+
+    function limparVinculoOSNaManutencao(){
+      if($("mLinkedOSId")) $("mLinkedOSId").value = "";
+    }
+
+    function renderOS(){
+      preencherSelectOSItens();
+      const lista = $("listaOS");
+      if(!lista) return;
+      const busca = ($("filtroOSBusca")?.value || "").trim().toLowerCase();
+      const filtroStatus = $("filtroOSStatus")?.value || "";
+      let itens = [...(state.ordensServico || [])];
+      if(busca){
+        itens = itens.filter(os => {
+          const item = findFrotaItem(os.itemId);
+          return (os.tipo || "").toLowerCase().includes(busca) ||
+                 (os.descricao || "").toLowerCase().includes(busca) ||
+                 (item?.prefixo || "").toLowerCase().includes(busca);
+        });
+      }
+      if(filtroStatus){
+        itens = itens.filter(os => statusOS(os) === filtroStatus);
+      }
+      if(!itens.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhuma ordem de serviço encontrada</div>`;
+        return;
+      }
+      lista.innerHTML = itens.sort((a,b)=>(b.createdAtMs || 0) - (a.createdAtMs || 0)).map(os => {
+        const item = findFrotaItem(os.itemId);
+        const st = statusOS(os);
+        return `
+          <div class="border rounded-[26px] p-5">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div class="text-2xl font-black">${item?.prefixo || "-"} — ${os.tipo || "-"}</div>
+                <div class="text-slate-600 mt-1">${item?.categoriaOperacional || "-"} • Responsável: ${os.responsavel || "-"}</div>
+                <div class="text-sm text-slate-500 mt-1">
+                  Abertura: ${formatDateBR(os.dataAbertura)} | Agendada: ${formatDateBR(os.dataAgendada)} | Conclusão: ${formatDateBR(os.dataConclusao)}
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">${badgeOS(st)}</div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3 mt-4 text-sm">
+              <div><b>Descrição:</b> ${os.descricao || "-"}</div>
+              <div><b>Observações:</b> ${os.observacoes || "-"}</div>
+              <div><b>Local / oficina:</b> ${os.local || "-"}</div>
+              <div><b>Lançamento:</b> ${formatDateTime(os.createdAtMs)}</div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2 no-print">
+              ${st !== "concluida" && st !== "cancelada" ? `<button class="btn btn-soft" onclick="window.usarOSNaManutencao('${os.id}')">Concluir e lançar manutenção</button>` : ``}
+              ${isAdmin() ? `<button class="btn btn-danger" onclick="window.excluirOS('${os.id}')">Excluir</button>` : ``}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderResumoTropaInline(){
+      const lista = $("listaResumoCondutoresInline");
+      const cards = $("resumoCondutoresCardsInline");
+      if(!lista || !cards) return;
+      const busca = ($("buscaResumoTropa")?.value || "").trim().toLowerCase();
+      const itens = [...state.motoristas].filter(m =>
+        !busca ||
+        (m.nome || "").toLowerCase().includes(busca) ||
+        (m.rg || "").toLowerCase().includes(busca) ||
+        (m.cnh || "").toLowerCase().includes(busca) ||
+        (m.matricula || "").toLowerCase().includes(busca)
+      );
+      const total = state.motoristas.length;
+      const cnhVencidas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "vencida").length;
+      const cnhProximas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "proxima").length;
+      const cursosVencidos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "vencida").length, 0);
+      const cursosProximos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "proxima").length, 0);
+      cards.innerHTML = `
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Condutores</div><div class="text-3xl font-black mt-1">${total}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">CNH vencida</div><div class="text-3xl font-black mt-1 danger">${cnhVencidas}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">CNH próxima</div><div class="text-3xl font-black mt-1 warn">${cnhProximas}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Cursos venc./próx.</div><div class="text-3xl font-black mt-1">${cursosVencidos} / <span class="warn">${cursosProximos}</span></div></div>
+      `;
+      lista.innerHTML = itens.length ? itens.sort((a,b)=>(a.nome || "").localeCompare(b.nome || "")).map(m => `
+        <div class="border rounded-2xl p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="font-black text-lg">${m.nome || "-"}</div>
+              <div class="text-sm text-slate-500">${m.funcao || "-"} • ${m.areaAtuacao || "-"}</div>
+              <div class="text-sm text-slate-400 mt-1">RG: ${m.rg || "-"} • CNH: ${m.cnh || "-"} • Validade: ${formatDateBR(m.validadeCnh)}</div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${badgeValidade(motoristaValidadeStatus(m))}
+              ${(m.cursos || []).some(c => cursoStatus(c)==='vencida') ? `<span class="badge bg-rose-100 text-rose-700">Curso vencido</span>` : (m.cursos || []).some(c => cursoStatus(c)==='proxima') ? `<span class="badge bg-amber-100 text-amber-700">Curso próximo</span>` : `<span class="badge bg-emerald-100 text-emerald-700">Cursos em dia</span>`}
+            </div>
+          </div>
+        </div>
+      `).join("") : `<div class="text-center text-slate-500 py-8">Nenhum condutor encontrado</div>`;
+    }
+
+    async function addOS(){
+      if(!state.usuario) return;
+      const itemId = $("osItemId").value;
+      const tipo = $("osTipo").value.trim();
+      const status = $("osStatus").value;
+      const responsavel = $("osResponsavel").value.trim();
+      const dataAbertura = $("osDataAbertura").value;
+      const dataAgendada = $("osDataAgendada").value;
+      const dataConclusao = $("osDataConclusao").value;
+      const local = $("osLocal").value.trim();
+      const descricao = $("osDescricao").value.trim();
+      const observacoes = $("osObs").value.trim();
+
+      if(!itemId){ toast("Selecione o item da OS."); return; }
+      if(!tipo){ toast("Informe o tipo do problema / serviço."); return; }
+      if(!responsavel){ toast("Informe quem abriu / informou a OS."); return; }
+      if(!dataAbertura){ toast("Informe a data de abertura."); return; }
+      if(!descricao){ toast("Descreva a OS."); return; }
+
+      try{
+        await addDoc(OS_COL, {
+          itemId, tipo, status, responsavel, dataAbertura,
+          dataAgendada: dataAgendada || "",
+          dataConclusao: dataConclusao || "",
+          local, descricao, observacoes,
+          createdAtMs: Date.now(),
+          updatedAtMs: Date.now()
+        });
+        salvarResponsavelOS(responsavel);
+        try{
+          const item = findFrotaItem(itemId);
+          await logAction("OS cadastrada", `${item?.prefixo || "-"} - ${tipo}`);
+        }catch(err){
+          console.error("Falha ao registrar histórico da OS:", err);
+        }
+        limparFormularioOS();
+        toast("Ordem de serviço cadastrada");
+      }catch(err){
+        console.error("Erro ao salvar OS:", err);
+        alert("Erro ao salvar a ordem de serviço. Confira as permissões do Firestore e tente novamente.");
+      }
+    }
+
+    async function garantirTipoManut(nome, descricao){
+      const normal = (nome || "").trim();
+      if(!normal) return;
+      const existe = (state.tiposManutencao || []).some(t => (t.nome || "").toLowerCase() === normal.toLowerCase());
+      const padrao = tiposManutPadrao().some(t => t.toLowerCase() === normal.toLowerCase());
+      if(existe || padrao) return;
+      await addDoc(TIPOSMANUT_COL, {
+        nome: normal,
+        descricao: descricao || "",
+        ativo: true,
+        criadoPor: state.usuario?.nome || "Usuário",
+        createdAtMs: Date.now()
+      });
+      await logAction("Tipo de manutenção criado", normal);
+    }
+
+    function renderResumoViaturas(){
+      const body = $("resumoViaturasBody");
+      const cards = $("resumoViaturasCards");
+      if(!body || !cards) return;
+      const busca = ($("buscaResumoViaturas").value || "").trim().toLowerCase();
+      const itens = frotaCompleta().filter(v =>
+        !busca ||
+        (v.prefixo || "").toLowerCase().includes(busca) ||
+        (v.modelo || "").toLowerCase().includes(busca) ||
+        (v.tipo || "").toLowerCase().includes(busca) ||
+        (v.motor || "").toLowerCase().includes(busca)
+      );
+      body.innerHTML = "";
+      if(!itens.length){
+        body.innerHTML = `<tr><td colspan="8" class="py-6 px-3 text-center text-slate-500">Nenhum item encontrado</td></tr>`;
+      } else {
+        itens.sort((a,b)=>(a.prefixo||"").localeCompare(b.prefixo||"")).forEach(v => {
+          const arr = state.manutencoes.filter(m => m.viaturaId === v.id);
+          body.innerHTML += `
+            <tr class="border-b">
+              <td class="py-3 px-3 font-black">${v.prefixo || "-"}</td>
+              <td class="py-3 px-3">${v.categoriaOperacional}</td>
+              <td class="py-3 px-3">${v.tipo || "-"}</td>
+              <td class="py-3 px-3">${getStatusBadge(v.status)}</td>
+              <td class="py-3 px-3">${v.medidorAtual ?? "-"}</td>
+              <td class="py-3 px-3 warn font-black">${arr.filter(m => statusManut(m)==="proxima").length}</td>
+              <td class="py-3 px-3 danger font-black">${arr.filter(m => statusManut(m)==="vencida").length}</td>
+              <td class="py-3 px-3">${formatDateBR(v.ultimoRegistroData || "")}</td>
+            </tr>
+          `;
+        });
+      }
+
+      const frota = frotaCompleta();
+      const osAbertas = state.ordensServico.filter(o => statusOS(o) === "aberta").length;
+      const osAgendadas = state.ordensServico.filter(o => statusOS(o) === "agendada").length;
+      const osAtrasadas = state.ordensServico.filter(o => statusOS(o) === "atrasada").length;
+      cards.innerHTML = `
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Viaturas</div><div class="text-3xl font-black mt-1">${state.viaturas.length}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Embarcações</div><div class="text-3xl font-black mt-1">${state.embarcacoes.length}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Operando</div><div class="text-3xl font-black mt-1 ok">${frota.filter(v => v.status==="OPERANDO").length}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Inoperante</div><div class="text-3xl font-black mt-1 danger">${frota.filter(v => v.status==="INOPERANTE").length}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">OS abertas</div><div class="text-3xl font-black mt-1 danger">${osAbertas}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">OS agend./atras.</div><div class="text-3xl font-black mt-1">${osAgendadas} / <span class="danger">${osAtrasadas}</span></div></div>
+      `;
+      preencherSelectAuxItem();
+      renderResumoTropaInline();
+    }
+
+    function renderResumoCondutores(){
+      const lista = $("listaResumoCondutores");
+      const cards = $("resumoCondutoresCards");
+      if(!lista || !cards) return;
+      const busca = ($("buscaResumoCondutores").value || "").trim().toLowerCase();
+      const itens = [...state.motoristas].filter(m =>
+        !busca ||
+        (m.nome || "").toLowerCase().includes(busca) ||
+        (m.rg || "").toLowerCase().includes(busca) ||
+        (m.cnh || "").toLowerCase().includes(busca) ||
+        (m.matricula || "").toLowerCase().includes(busca)
+      );
+      lista.innerHTML = itens.length ? itens.sort((a,b)=>(a.nome||"").localeCompare(b.nome||"")).map(m => {
+        const cnhStatus = motoristaValidadeStatus(m);
+        const cursos = m.cursos || [];
+        const cursosVencidos = cursos.filter(c => cursoStatus(c) === "vencida").length;
+        const cursosProximos = cursos.filter(c => cursoStatus(c) === "proxima").length;
+        return `
+          <div class="border rounded-[26px] p-5">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div class="text-2xl font-black">${m.nome || "-"}</div>
+                <div class="text-slate-600">${m.funcao || "-"}</div>
+                <div class="text-sm text-slate-400 mt-1">Área: ${m.areaAtuacao || "-"} • CNH: ${m.cnh || "-"} • Categoria: ${m.categoria || "-"}</div>
+              </div>
+              <div class="flex gap-2 flex-wrap">${badgeValidade(cnhStatus)} ${cursosVencidos ? `<span class="badge bg-rose-100 text-rose-700">${cursosVencidos} curso(s) vencido(s)</span>` : cursosProximos ? `<span class="badge bg-amber-100 text-amber-700">${cursosProximos} curso(s) próximo(s)</span>` : `<span class="badge bg-emerald-100 text-emerald-700">Cursos em dia</span>`}</div>
+            </div>
+            <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-3 mt-4 text-sm">
+              <div><b>RG:</b> ${m.rg || "-"}</div>
+              <div><b>Matrícula:</b> ${m.matricula || "-"}</div>
+              <div><b>Validade CNH:</b> ${formatDateBR(m.validadeCnh)}</div>
+              <div><b>WhatsApp:</b> ${m.whatsapp || "-"}</div>
+            </div>
+          </div>
+        `;
+      }).join("") : `<div class="text-center text-slate-500 py-8">Nenhum condutor encontrado</div>`;
+
+      const total = state.motoristas.length;
+      const terrestres = state.motoristas.filter(m => m.areaAtuacao === "Terrestre").length;
+      const nauticos = state.motoristas.filter(m => m.areaAtuacao === "Náutica").length;
+      const ambos = state.motoristas.filter(m => m.areaAtuacao === "Ambos").length;
+      const cnhVencidas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "vencida").length;
+      const cnhProximas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "proxima").length;
+      const cursosVencidos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "vencida").length, 0);
+      const cursosProximos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "proxima").length, 0);
+
+      cards.innerHTML = `
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Condutores</div><div class="text-3xl font-black mt-1">${total}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Terrestre</div><div class="text-3xl font-black mt-1">${terrestres}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Náutica</div><div class="text-3xl font-black mt-1">${nauticos}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Ambos</div><div class="text-3xl font-black mt-1">${ambos}</div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">CNH vencida / próxima</div><div class="text-3xl font-black mt-1 danger">${cnhVencidas} / <span class="warn">${cnhProximas}</span></div></div>
+        <div class="rounded-2xl border p-4"><div class="text-sm text-slate-500">Cursos vencidos / próximos</div><div class="text-3xl font-black mt-1 danger">${cursosVencidos} / <span class="warn">${cursosProximos}</span></div></div>
+      `;
+    }
+
+    function renderCentralAdministrativa(){
+      if($("centralStatViaturas")) $("centralStatViaturas").textContent = state.viaturas.length;
+      if($("centralStatEmbarcacoes")) $("centralStatEmbarcacoes").textContent = state.embarcacoes.length;
+      if($("centralStatCondutores")) $("centralStatCondutores").textContent = state.motoristas.length;
+      if($("centralStatTiposManut")) $("centralStatTiposManut").textContent = listaTiposManutCombinada().length;
+      if($("centralStatOS")) $("centralStatOS").textContent = state.ordensServico.length;
+    }
+
+    function renderEmbarcacoes(){
+      const busca = ($("filtroEmbarcacaoBusca")?.value || "").trim().toLowerCase();
+      const lista = $("listaEmbarcacoes");
+      if(!lista) return;
+      let itens = [...state.embarcacoes];
+      if(busca){
+        itens = itens.filter(e =>
+          (e.prefixo || "").toLowerCase().includes(busca) ||
+          (e.tipo || "").toLowerCase().includes(busca) ||
+          (e.motor || "").toLowerCase().includes(busca)
+        );
+      }
+      lista.innerHTML = itens.length ? itens.sort((a,b)=>(a.prefixo||"").localeCompare(b.prefixo||"")).map(e => `
+        <div class="border rounded-[26px] p-5">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center text-2xl">🚤</div>
+              <div>
+                <div class="text-2xl font-black">${e.prefixo}</div>
+                <div class="text-slate-600">${e.tipo || "-"}</div>
+                <div class="text-sm text-slate-400 mt-1">Motor: ${e.motor || "-"} • Potência: ${e.potencia || "-"}</div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">${getStatusBadge(e.status)}</div>
+          </div>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-3 mt-4 text-sm">
+            <div><b>Horas atuais:</b> ${e.medidorAtual ?? "-"}</div>
+            <div><b>Último registro:</b> ${formatDateBR(e.ultimoRegistroData || "")}</div>
+            <div><b>Status:</b> ${e.status || "-"}</div>
+            <div><b>Atualizado:</b> ${formatDateTime(e.updatedAtMs || e.createdAtMs)}</div>
+          </div>
+          <div class="mt-3 rounded-2xl border p-4 text-sm"><b>Observações:</b> ${e.observacoes || "-"} ${e.motivoInoperancia ? `<div class="mt-2"><b>Motivo da inoperância:</b> ${e.motivoInoperancia}</div>` : ""}</div>
+          <div class="mt-4 flex flex-wrap gap-2 no-print">
+            <button class="btn btn-wa" onclick="window.enviarEmbarcacaoWhatsApp('${e.id}')">WhatsApp</button>
+            ${isAdmin() ? `<button class="btn btn-soft" onclick="window.editarEmbarcacao('${e.id}')">Editar</button>` : ``}
+            ${isAdmin() ? `<button class="btn btn-danger" onclick="window.excluirEmbarcacao('${e.id}')">Excluir</button>` : ``}
+          </div>
+        </div>
+      `).join("") : `<div class="text-center text-slate-500 py-8">Nenhuma embarcação cadastrada</div>`;
+    }
+
+
+    function renderPainel(){
+      const viaturas = state.viaturas;
+      const manut = state.manutencoes;
+      const frota = frotaCompleta();
+      $("statViaturas").textContent = frota.length;
+      $("statOperando").textContent = frota.filter(v => v.status === "OPERANDO").length;
+      $("statInoperante").textContent = frota.filter(v => v.status === "INOPERANTE").length;
+      $("statManut").textContent = manut.length;
+      $("statProx").textContent = manut.filter(m => statusManut(m) === "proxima").length;
+      $("statVenc").textContent = manut.filter(m => statusManut(m) === "vencida").length;
+
+      const busca = ($("buscaPainel").value || "").trim().toLowerCase();
+      const body = $("painelResumoBody");
+      body.innerHTML = "";
+
+      const filtradas = frota.filter(v =>
+        !busca ||
+        (v.prefixo || "").toLowerCase().includes(busca) ||
+        (v.modelo || "").toLowerCase().includes(busca) ||
+        (v.tipo || "").toLowerCase().includes(busca) ||
+        (v.motor || "").toLowerCase().includes(busca)
+      );
+
+      if(!filtradas.length){
+        body.innerHTML = `<tr><td colspan="6" class="py-6 px-3 text-center text-slate-500">Nenhuma viatura encontrada</td></tr>`;
+      } else {
+        filtradas.forEach(v => {
+          const arr = manut.filter(m => m.viaturaId === v.id);
+          body.innerHTML += `
+            <tr class="border-b">
+              <td class="py-3 px-3 font-black">${v.prefixo || "-"}</td>
+              <td class="py-3 px-3">${v.tipo || v.categoriaOperacional || "-"}</td>
+              <td class="py-3 px-3">${getStatusBadge(v.status)}</td>
+              <td class="py-3 px-3">${arr.length}</td>
+              <td class="py-3 px-3 warn font-black">${arr.filter(m => statusManut(m)==="proxima").length}</td>
+              <td class="py-3 px-3 danger font-black">${arr.filter(m => statusManut(m)==="vencida").length}</td>
+            </tr>
+          `;
+        });
+      }
+
+      const alertas = [];
+      const inop = frota.filter(v => v.status === "INOPERANTE");
+      if(inop.length){
+        alertas.push(`<div class="rounded-2xl border border-rose-200 bg-rose-50 p-4"><div class="font-black text-rose-700">${inop.length} item(ns) inoperante(s)</div><div class="text-sm text-rose-700 mt-1">Verifique motivos e prioridade de retorno</div></div>`);
+      }
+
+      const vencidas = manut.filter(m => statusManut(m) === "vencida").length;
+      if(vencidas){
+        alertas.push(`<div class="rounded-2xl border border-amber-200 bg-amber-50 p-4"><div class="font-black text-amber-700">${vencidas} manutenção(ões) vencida(s)</div><div class="text-sm text-amber-700 mt-1">Regularizar o quanto antes</div></div>`);
+      }
+
+      const cnhVencidas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "vencida").length;
+      const cnhProximas = state.motoristas.filter(m => motoristaValidadeStatus(m) === "proxima").length;
+      const cursosVencidos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "vencida").length, 0);
+      const cursosProximos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "proxima").length, 0);
+      const paradas = frota.filter(v => {
+        const dias = diasDesde(v.updatedAtMs || v.createdAtMs);
+        return dias !== null && dias >= 30;
+      }).length;
+      const semMedidor = frota.filter(v => v.medidorAtual === null || v.medidorAtual === undefined || v.medidorAtual === "").length;
+      const inoperantesAntigas = frota.filter(v => v.status === "INOPERANTE" && ((diasDesde(v.updatedAtMs || v.createdAtMs)) || 0) >= 15).length;
+
+      if(cnhVencidas){
+        alertas.push(`<div class="rounded-2xl border border-rose-200 bg-rose-50 p-4"><div class="font-black text-rose-700">${cnhVencidas} CNH(s) vencida(s)</div><div class="text-sm text-rose-700 mt-1">Regularize os condutores com urgência</div></div>`);
+      }
+      if(cnhProximas){
+        alertas.push(`<div class="rounded-2xl border border-amber-200 bg-amber-50 p-4"><div class="font-black text-amber-700">${cnhProximas} CNH(s) vencendo em até 30 dias</div><div class="text-sm text-amber-700 mt-1">Programe a renovação antes do vencimento</div></div>`);
+      }
+      if(cursosVencidos){
+        alertas.push(`<div class="rounded-2xl border border-rose-200 bg-rose-50 p-4"><div class="font-black text-rose-700">${cursosVencidos} curso(s) vencido(s)</div><div class="text-sm text-rose-700 mt-1">Verifique os cursos obrigatórios</div></div>`);
+      }
+      if(cursosProximos){
+        alertas.push(`<div class="rounded-2xl border border-amber-200 bg-amber-50 p-4"><div class="font-black text-amber-700">${cursosProximos} curso(s) vencendo em até 30 dias</div><div class="text-sm text-amber-700 mt-1">Antecipe a atualização dos cursos</div></div>`);
+      }
+      if(paradas){
+        alertas.push(`<div class="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div class="font-black text-slate-700">${paradas} item(ns) sem atualização há 30+ dias</div><div class="text-sm text-slate-700 mt-1">Atualize medidor e situação operacional</div></div>`);
+      }
+      if(semMedidor){
+        alertas.push(`<div class="rounded-2xl border border-amber-200 bg-amber-50 p-4"><div class="font-black text-amber-700">${semMedidor} item(ns) sem medidor informado</div><div class="text-sm text-amber-700 mt-1">Use o registro auxiliar para atualizar KM/horas</div></div>`);
+      }
+      if(inoperantesAntigas){
+        alertas.push(`<div class="rounded-2xl border border-rose-200 bg-rose-50 p-4"><div class="font-black text-rose-700">${inoperantesAntigas} item(ns) inoperante(s) há 15+ dias</div><div class="text-sm text-rose-700 mt-1">Priorize o retorno operacional</div></div>`);
+      }
+
+      if(!alertas.length){
+        alertas.push(`<div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><div class="font-black text-emerald-700">Sem alertas críticos</div><div class="text-sm text-emerald-700 mt-1">Situação estável no momento</div></div>`);
+      }
+      $("painelAlertas").innerHTML = alertas.join("");
+
+      const proximas = [...manut]
+        .filter(m => statusManut(m) !== "ok")
+        .sort((a,b) => (a.proximaData || "").localeCompare(b.proximaData || ""));
+      const container = $("painelProximas");
+      container.innerHTML = "";
+      if(!proximas.length){
+        container.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhuma manutenção próxima ou vencida</div>`;
+      } else {
+        proximas.forEach(m => {
+          const v = frota.find(x => x.id === m.viaturaId);
+          container.innerHTML += `
+            <div class="border rounded-2xl p-4 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div class="font-black text-xl">${v?.prefixo || "-"}</div>
+                <div class="text-slate-600">${m.tipo}</div>
+                <div class="text-sm text-slate-500">
+                  Próxima data: ${formatDateBR(m.proximaData)} |
+                  Próximo medidor: ${m.proximoMedidor ?? "-"}
+                </div>
+              </div>
+              <div>${manutBadge(statusManut(m))}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderViaturas(){
+      const busca = ($("filtroViaturaBusca").value || "").trim().toLowerCase();
+      const tipo = $("filtroViaturaTipo").value;
+      const status = $("filtroViaturaStatus").value;
+      const lista = $("listaViaturas");
+      lista.innerHTML = "";
+
+      let filtradas = [...state.viaturas];
+      if(busca){
+        filtradas = filtradas.filter(v =>
+          (v.prefixo || "").toLowerCase().includes(busca) ||
+          (v.modelo || "").toLowerCase().includes(busca) ||
+          (v.descricao || "").toLowerCase().includes(busca) ||
+          (v.placa || "").toLowerCase().includes(busca)
+        );
+      }
+      if(tipo) filtradas = filtradas.filter(v => v.tipo === tipo);
+      if(status) filtradas = filtradas.filter(v => v.status === status);
+
+      if(!filtradas.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhuma viatura encontrada</div>`;
+      } else {
+        filtradas
+          .sort((a,b)=> (a.prefixo || "").localeCompare(b.prefixo || ""))
+          .forEach(v => {
+            const qtd = state.manutencoes.filter(m => m.viaturaId === v.id).length;
+            lista.innerHTML += `
+              <div class="border rounded-[26px] p-5">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                  <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-2xl">${v.tipo === "Náutica" ? "🚤" : "🚒"}</div>
+                    <div>
+                      <div class="text-2xl font-black">${v.prefixo}</div>
+                      <div class="text-slate-600">${v.descricao || "Sem descrição"}</div>
+                      <div class="text-sm text-slate-400 mt-1">${v.tipo} • ${v.modelo || "-"} • ${v.placa || "-"}</div>
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    ${getStatusBadge(v.status)}
+                    <span class="badge bg-slate-100 text-slate-700">${qtd} manutenção(ões)</span>
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-3 mt-4 text-sm">
+                  <div><b>Setor:</b> ${v.setor || "-"}</div>
+                  <div><b>Medidor atual:</b> ${v.medidorAtual ?? "-"}</div>
+                  <div><b>Tipo:</b> ${v.tipo}</div>
+                  <div><b>Última atualização:</b> ${formatDateTime(v.updatedAtMs || v.createdAtMs)}</div>
+                </div>
+
+                ${v.status === "INOPERANTE" ? `
+                  <div class="mt-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm">
+                    <b>Motivo da inoperância:</b> ${v.motivoInoperancia || "-"}
+                  </div>
+                ` : ""}
+
+                <div class="mt-4 flex flex-wrap gap-2 no-print">
+                  <button class="btn btn-wa" onclick="window.enviarViaturaWhatsApp('${v.id}')">WhatsApp</button>
+                  ${isAdmin() ? `<button class="btn btn-soft" onclick="window.editarViatura('${v.id}')">Editar</button>` : ``}
+                  ${isAdmin() ? `<button class="btn btn-danger" onclick="window.excluirViatura('${v.id}')">Excluir</button>` : ``}
+                </div>
+              </div>
+            `;
+          });
+      }
+
+      const select = $("mViatura");
+      select.innerHTML = `<option value="">Selecione</option>`;
+      state.viaturas
+        .sort((a,b)=> (a.prefixo || "").localeCompare(b.prefixo || ""))
+        .forEach(v => {
+          select.innerHTML += `<option value="${v.id}">${v.prefixo} - ${v.tipo || v.categoriaOperacional}</option>`;
+        });
+    }
+
+    function renderManutencoes(){
+      const busca = ($("filtroManutBusca").value || "").trim().toLowerCase();
+      const filtroStatus = $("filtroManutStatus").value;
+      const lista = $("listaManut");
+      lista.innerHTML = "";
+
+      let itens = [...state.manutencoes];
+      if(busca){
+        itens = itens.filter(m => {
+          const v = findFrotaItem(m.viaturaId);
+          return (m.tipo || "").toLowerCase().includes(busca) ||
+                 (m.descricao || "").toLowerCase().includes(busca) ||
+                 (v?.prefixo || "").toLowerCase().includes(busca);
+        });
+      }
+      if(filtroStatus){
+        itens = itens.filter(m => statusManut(m) === filtroStatus);
+      }
+
+      if(!itens.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhuma manutenção encontrada</div>`;
+      } else {
+        itens.sort((a,b) => (b.createdAtMs || 0) - (a.createdAtMs || 0)).forEach(m => {
+          const v = findFrotaItem(m.viaturaId);
+          lista.innerHTML += `
+            <div class="border rounded-[26px] p-5">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div class="text-2xl font-black">${v?.prefixo || "-"} — ${m.tipo}</div>
+                  <div class="text-slate-600 mt-1">Realizada em ${formatDateBR(m.data)} por ${m.responsavel || "-"}</div>
+                  <div class="text-sm text-slate-500 mt-1">
+                    Próxima data: ${formatDateBR(m.proximaData)} |
+                    Próximo medidor: ${m.proximoMedidor ?? "-"} |
+                    Medidor atual: ${m.medidorAtual ?? "-"}
+                  </div>
+                </div>
+                <div>${manutBadge(statusManut(m))}</div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-3 mt-4 text-sm text-slate-600">
+                <div><b>Descrição:</b> ${m.descricao || "-"}</div>
+                <div><b>Observações:</b> ${m.observacoes || "-"}</div>
+                <div><b>OS vinculada:</b> ${m.osId ? "Sim" : "Não"}</div>
+              </div>
+
+              <div class="grid md:grid-cols-4 gap-3 mt-4 text-sm">
+                <div><b>Medidor na manutenção:</b> ${m.medidor ?? "-"}</div>
+                <div><b>Periodicidade medidor:</b> ${m.periodicidadeMedidor ?? "-"}</div>
+                <div><b>Periodicidade meses:</b> ${m.periodicidadeMeses ?? "-"}</div>
+                <div><b>Lançamento:</b> ${formatDateTime(m.createdAtMs)}</div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2 no-print">
+                ${isAdmin() ? `<button class="btn btn-danger" onclick="window.excluirManut('${m.id}')">Excluir</button>` : ``}
+              </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderMotoristas(){
+      const busca = ($("filtroMotoristaBusca").value || "").trim().toLowerCase();
+      const lista = $("listaMotoristas");
+      lista.innerHTML = "";
+
+      let itens = [...state.motoristas];
+      if(busca){
+        itens = itens.filter(m =>
+          (m.nome || "").toLowerCase().includes(busca) ||
+          (m.rg || "").toLowerCase().includes(busca) ||
+          (m.cnh || "").toLowerCase().includes(busca) ||
+          (m.matricula || "").toLowerCase().includes(busca)
+        );
+      }
+
+      if(!itens.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhum condutor cadastrado</div>`;
+      } else {
+        itens.sort((a,b)=> (a.nome || "").localeCompare(b.nome || "")).forEach(m => {
+          const vStatus = motoristaValidadeStatus(m);
+          lista.innerHTML += `
+            <div class="border rounded-[26px] p-5">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex items-start gap-4">
+                  <img src="${m.fotoLivroUrl || logoFallback()}" class="small-thumb" alt="Foto do livro" />
+                  <div>
+                    <div class="text-2xl font-black">${m.nome || "-"}</div>
+                    <div class="text-slate-600">${m.funcao || "Condutor"}</div>
+                    <div class="text-sm text-slate-400 mt-1">RG: ${m.rg || "-"} • Matrícula: ${m.matricula || "-"} • CNH: ${m.cnh || "-"}</div>
+                    <div class="text-sm text-slate-400 mt-1">Área: ${m.areaAtuacao || "-"} • Categoria: ${m.categoria || "-"}</div>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  ${badgeValidade(vStatus)}
+                  <span class="badge bg-slate-100 text-slate-700">Cat. ${m.categoria || "-"}</span>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-3 mt-4 text-sm">
+                <div><b>Validade CNH:</b> ${formatDateBR(m.validadeCnh)}</div>
+                <div><b>WhatsApp:</b> ${m.whatsapp || "-"}</div>
+                <div><b>Função:</b> ${m.funcao || "-"}</div>
+                <div><b>Área de atuação:</b> ${m.areaAtuacao || "-"}</div>
+                <div><b>Atualizado:</b> ${formatDateTime(m.updatedAtMs || m.createdAtMs)}</div>
+              </div>
+
+              <div class="mt-3 rounded-2xl border p-4 text-sm">
+                <b>Observações:</b> ${m.observacoes || "-"}
+                <div class="mt-2"><b>Texto extraído / registro:</b> ${m.textoExtraido || "-"}</div>
+                <div class="mt-2"><b>Cursos:</b> ${(m.cursos || []).length ? (m.cursos || []).map(c => `${c.nome} (${formatDateBR(c.validade)})`).join(" • ") : "-"}</div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2 no-print">
+                <button class="btn btn-wa" onclick="window.enviarMotoristaWhatsApp('${m.id}')">WhatsApp</button>
+                ${isAdmin() ? `<button class="btn btn-soft" onclick="window.editarMotorista('${m.id}')">Editar</button>` : ``}
+                ${isAdmin() ? `<button class="btn btn-danger" onclick="window.excluirMotorista('${m.id}')">Excluir</button>` : ``}
+              </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderRelatorios(){
+      const resumo = $("relatorioResumo");
+      const inoperantes = $("relatorioInoperantes");
+
+      const frota = frotaCompleta();
+      const cursosVencidos = state.motoristas.reduce((acc, m) => acc + (m.cursos || []).filter(c => cursoStatus(c) === "vencida").length, 0);
+      resumo.innerHTML = `
+        <div class="rounded-2xl border p-4 bg-slate-50"><div class="text-sm text-slate-500">Documento interno</div><div class="text-2xl font-black mt-1">${state.config.nome || "-"}</div><div class="text-sm text-slate-500 mt-1">${state.config.subtitulo || "-"}</div></div>
+        <div class="rounded-2xl border p-4"><b>Viaturas:</b> ${state.viaturas.length}</div>
+        <div class="rounded-2xl border p-4"><b>Embarcações:</b> ${state.embarcacoes.length}</div>
+        <div class="rounded-2xl border p-4"><b>Operando:</b> ${frota.filter(v=>v.status==="OPERANDO").length}</div>
+        <div class="rounded-2xl border p-4"><b>Inoperante:</b> ${frota.filter(v=>v.status==="INOPERANTE").length}</div>
+        <div class="rounded-2xl border p-4"><b>Manutenções próximas:</b> ${state.manutencoes.filter(m=>statusManut(m)==="proxima").length}</div>
+        <div class="rounded-2xl border p-4"><b>Manutenções vencidas:</b> ${state.manutencoes.filter(m=>statusManut(m)==="vencida").length}</div>
+        <div class="rounded-2xl border p-4"><b>Condutores:</b> ${state.motoristas.length}</div>
+        <div class="rounded-2xl border p-4"><b>CNHs vencidas:</b> ${state.motoristas.filter(m=>motoristaValidadeStatus(m)==="vencida").length}</div>
+        <div class="rounded-2xl border p-4"><b>Cursos vencidos:</b> ${cursosVencidos}</div>
+      `;
+
+      const inop = frotaCompleta().filter(v => v.status === "INOPERANTE");
+      if(!inop.length){
+        inoperantes.innerHTML = `<div class="text-center text-slate-500 py-6">Nenhuma viatura inoperante</div>`;
+      } else {
+        inoperantes.innerHTML = inop.map(v => `
+          <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4">
+            <div class="font-black text-lg">${v.prefixo} - ${v.tipo || v.categoriaOperacional}</div>
+            <div class="text-sm mt-1"><b>Motivo:</b> ${v.motivoInoperancia || "-"}</div>
+            <div class="text-sm mt-1"><b>Setor:</b> ${v.setor || "-"}</div>
+          </div>
+        `).join("");
+      }
+    }
+
+    function renderHistorico(){
+      const busca = ($("filtroHistoricoBusca").value || "").trim().toLowerCase();
+      const lista = $("listaHistorico");
+      lista.innerHTML = "";
+
+      let itens = [...state.historico];
+      if(busca){
+        itens = itens.filter(h =>
+          (h.acao || "").toLowerCase().includes(busca) ||
+          (h.detalhes || "").toLowerCase().includes(busca) ||
+          (h.usuarioNome || "").toLowerCase().includes(busca)
+        );
+      }
+
+      if(!itens.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhum registro encontrado</div>`;
+      } else {
+        itens.sort((a,b) => (b.createdAtMs || 0) - (a.createdAtMs || 0)).forEach(h => {
+          lista.innerHTML += `
+            <div class="border rounded-2xl p-4">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="font-black">${h.acao}</div>
+                <div class="text-sm text-slate-500">${formatDateTime(h.createdAtMs)}</div>
+              </div>
+              <div class="mt-1 text-slate-600">${h.detalhes}</div>
+              <div class="mt-1 text-sm text-slate-400">Usuário: ${h.usuarioNome || "-"}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderUsuarios(){
+      const lista = $("listaUsuarios");
+      lista.innerHTML = "";
+
+      if(!state.users.length){
+        lista.innerHTML = `<div class="text-center text-slate-500 py-8">Nenhum usuário cadastrado</div>`;
+      } else {
+        state.users
+          .sort((a,b)=> (a.nome || "").localeCompare(b.nome || ""))
+          .forEach(u => {
+            lista.innerHTML += `
+              <div class="border rounded-[26px] p-5 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <div class="text-2xl font-black">${u.nome}</div>
+                  <div class="text-slate-600">${u.login}</div>
+                  <div class="text-sm text-slate-400 mt-1">RG: ${u.rg || "-"}</div>
+                  <div class="mt-2">
+                    <span class="badge bg-rose-100 text-rose-700">${u.perfil}</span>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2 no-print">
+                  ${isAdmin() ? `<button class="btn btn-soft" onclick="window.resetSenhaUsuario('${u.id}','${(u.nome||'').replace(/'/g,"\\'")}')">Resetar senha</button>` : ``}
+                  ${isAdmin() && state.usuario?.id !== u.id ? `<button class="btn btn-danger" onclick="window.excluirUsuario('${u.id}')">Excluir</button>` : ``}
+                </div>
+              </div>
+            `;
+          });
+      }
+
+      $("btnAddUsuario").disabled = !isAdmin();
+      $("btnSalvarConfig").disabled = !isAdmin();
+    }
+
+    
+    function renderAll(){
+      setBranding();
+      ensureLogged();
+      if(state.usuario){
+        renderPainel();
+        renderResumoViaturas();
+        renderViaturas();
+        renderEmbarcacoes();
+        renderOS();
+        renderTiposManut();
+        renderManutencoes();
+        renderMotoristas();
+        renderRelatorios();
+        if(isAdmin()){
+          renderHistorico();
+          renderUsuarios();
+          renderCentralAdministrativa();
+        }
+        controlarPermissoesTela();
+        preencherDatalistResponsaveisOS();
+      }
+    }
+
+    async function logAction(acao, detalhes){
+      if(!state.usuario) return;
+      await addDoc(HIST_COL, {
+        acao,
+        detalhes,
+        usuarioId: state.usuario.id,
+        usuarioNome: state.usuario.nome,
+        createdAtMs: Date.now()
+      });
+    }
+
+    async function ensureInitialData(){
+      const cfg = await getDoc(CONFIG_DOC);
+      if(!cfg.exists()){
+        await setDoc(CONFIG_DOC, state.config);
+      } else {
+        state.config = { ...state.config, ...cfg.data() };
+      }
+
+      const usersSnap = await getDocs(USERS_COL);
+      if(usersSnap.empty){
+        await addDoc(USERS_COL, {
+          nome: "Administrador",
+          rg: "",
+          login: "admin",
+          senhaHash: await sha256("admin123"),
+          perfil: "Administrador",
+          createdAtMs: Date.now()
+        });
+      }
+
+      const atualizados = await getDocs(USERS_COL);
+      state.users = atualizados.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+
+    function restoreSession(){
+      const raw = localStorage.getItem("cv_session");
+      if(!raw) return;
+      try{
+        state.usuario = JSON.parse(raw);
+      }catch(e){}
+    }
+
+    async function syncSessionUser(){
+      if(!state.usuario) return;
+      const fresh = state.users.find(u => u.id === state.usuario.id);
+      if(fresh){
+        state.usuario = {
+          id: fresh.id,
+          nome: fresh.nome,
+          login: fresh.login,
+          perfil: fresh.perfil
+        };
+        localStorage.setItem("cv_session", JSON.stringify(state.usuario));
+      } else {
+        state.usuario = null;
+        localStorage.removeItem("cv_session");
+      }
+    }
+
+    async function login(){
+      const login = $("loginUser").value.trim();
+      const senha = $("loginPass").value;
+      $("loginMsg").textContent = "";
+
+      if(!login || !senha){
+        $("loginMsg").textContent = "Preencha usuário e senha.";
+        return;
+      }
+
+      const hash = await sha256(senha);
+      const user = state.users.find(u => u.login === login && u.senhaHash === hash);
+
+      if(!user){
+        $("loginMsg").textContent = "Usuário ou senha inválidos.";
+        return;
+      }
+
+      state.usuario = {
+        id: user.id,
+        nome: user.nome,
+        login: user.login,
+        perfil: user.perfil
+      };
+      localStorage.setItem("cv_session", JSON.stringify(state.usuario));
+      renderAll();
+      toast("Login realizado");
+    }
+
+    async function addViatura(){
+      if(!state.usuario) return;
+
+      const prefixo = $("vPrefixo").value.trim().toUpperCase();
+      const tipo = $("vTipo").value;
+      const descricao = $("vDescricao").value.trim();
+      const placa = $("vPlaca").value.trim().toUpperCase();
+      const modelo = $("vModelo").value.trim();
+      const setor = $("vSetor").value.trim();
+      const status = $("vStatus").value;
+      const medidorAtual = $("vMedidorAtual").value === "" ? null : Number($("vMedidorAtual").value);
+      const motivoInoperancia = $("vMotivo").value.trim();
+
+      if(!prefixo){
+        toast("Informe o prefixo.");
+        return;
+      }
+      if(state.viaturas.some(v => v.prefixo === prefixo)){
+        toast("Esse prefixo já existe.");
+        return;
+      }
+      if(status === "INOPERANTE" && !motivoInoperancia){
+        toast("Informe o motivo da inoperância.");
+        return;
+      }
+
+      await addDoc(VIATURAS_COL, {
+        prefixo, tipo, descricao, placa, modelo, setor, status,
+        motivoInoperancia: status === "INOPERANTE" ? motivoInoperancia : "",
+        medidorAtual,
+        createdAtMs: Date.now(),
+        updatedAtMs: Date.now()
+      });
+
+      await logAction("Viatura cadastrada", `${prefixo} - ${tipo}`);
+      ["vPrefixo","vDescricao","vPlaca","vModelo","vSetor","vMotivo","vMedidorAtual"].forEach(id => $(id).value = "");
+      $("vTipo").value = "Terrestre";
+      $("vStatus").value = "OPERANDO";
+      toast("Viatura cadastrada");
+    }
+
+    
+    async function addManut(){
+      if(!state.usuario) return;
+
+      const viaturaId = $("mViatura").value;
+      let tipo = $("mTipo").value;
+      const data = $("mData").value;
+      const responsavel = $("mResponsavel").value.trim();
+      const medidor = $("mMedidor").value === "" ? null : Number($("mMedidor").value);
+      const periodicidadeMedidor = $("mPeriodicidadeMedidor").value === "" ? null : Number($("mPeriodicidadeMedidor").value);
+      const periodicidadeMeses = $("mPeriodicidadeMeses").value === "" ? null : Number($("mPeriodicidadeMeses").value);
+      const medidorAtual = $("mMedidorAtual").value === "" ? null : Number($("mMedidorAtual").value);
+      const descricao = $("mDescricao").value.trim();
+      const observacoes = $("mObs").value.trim();
+      const osId = $("mLinkedOSId") ? $("mLinkedOSId").value : "";
+
+      if(tipo === "__novo__"){
+        const novoNome = $("novoTipoNome").value.trim();
+        const novaDescricao = $("novoTipoDescricao").value.trim();
+        if(!novoNome){
+          toast("Informe o novo tipo de manutenção.");
+          return;
+        }
+        await garantirTipoManut(novoNome, novaDescricao);
+        tipo = novoNome;
+      }
+
+      if(!viaturaId || !tipo || !data || !responsavel){
+        toast("Preencha os campos obrigatórios.");
+        return;
+      }
+
+      const proximoMedidor = (medidor !== null && periodicidadeMedidor !== null) ? medidor + periodicidadeMedidor : null;
+      const proximaData = periodicidadeMeses ? addMonths(data, periodicidadeMeses) : null;
+
+      await addDoc(MANUT_COL, {
+        viaturaId, tipo, data, responsavel, medidor, periodicidadeMedidor,
+        periodicidadeMeses, medidorAtual, proximoMedidor, proximaData,
+        descricao, observacoes, osId: osId || "",
+        createdAtMs: Date.now()
+      });
+
+      const v = findFrotaItem(viaturaId);
+      if(v && medidorAtual !== null){
+        await updateDoc(doc(db, v.colecao, viaturaId), {
+          medidorAtual,
+          updatedAtMs: Date.now()
+        });
+      }
+
+      if(osId){
+        try{
+          await updateDoc(doc(db, "cv_ordens_servico", osId), {
+            status: "concluida",
+            dataConclusao: data,
+            updatedAtMs: Date.now()
+          });
+          await logAction("OS concluída via manutenção", `${v?.prefixo || "-"} - ${tipo}`);
+        }catch(err){
+          console.error(err);
+        }
+      }
+
+      await logAction("Manutenção cadastrada", `${v?.prefixo || "-"} - ${tipo}`);
+      ["mData","mResponsavel","mMedidor","mPeriodicidadeMedidor","mPeriodicidadeMeses","mMedidorAtual","mDescricao","mObs","novoTipoNome","novoTipoDescricao"].forEach(id => { if($(id)) $(id).value = ""; });
+      $("mViatura").value = "";
+      $("mTipo").value = "";
+      if($("novoTipoContainer")) $("novoTipoContainer").classList.add("hidden");
+      limparVinculoOSNaManutencao();
+      toast("Manutenção cadastrada");
+    }
+
+    async function addMotorista(){
+      if(!state.usuario) return;
+
+      const nome = $("motNome").value.trim();
+      const rg = $("motRg").value.trim();
+      const matricula = $("motMatricula").value.trim();
+      const cnh = $("motCnh").value.trim();
+      const categoria = $("motCategoria").value.trim().toUpperCase();
+      const validadeCnh = $("motValidade").value;
+      const whatsapp = $("motWhatsapp").value.trim();
+      const funcao = $("motFuncao").value.trim();
+      const areaAtuacao = $("motArea").value;
+      const observacoes = $("motObs").value.trim();
+      const textoExtraido = $("motTextoExtraido").value.trim();
+
+      if(!nome){
+        toast("Informe o nome do motorista.");
+        return;
+      }
+
+      await addDoc(MOTORISTAS_COL, {
+        nome, rg, matricula, cnh, categoria, validadeCnh, whatsapp, funcao, areaAtuacao,
+        observacoes, textoExtraido, cursos: [...state.cursosTemp],
+        fotoLivroUrl: state.motoristaFotoDataUrl || "",
+        createdAtMs: Date.now(),
+        updatedAtMs: Date.now()
+      });
+
+      await logAction("Motorista cadastrado", nome);
+      limparFormularioMotorista();
+      toast("Motorista cadastrado");
+    }
+
+    function limparFormularioMotorista(){
+      ["motNome","motRg","motMatricula","motCnh","motCategoria","motValidade","motWhatsapp","motObs","motTextoExtraido","motFoto","motCursoNome","motCursoValidade"].forEach(id => {
+        if ($(id)) $(id).value = "";
+      });
+      state.motoristaFotoDataUrl = "";
+      state.cursosTemp = [];
+      $("motFuncao").value = "Condutor e operador de viatura";
+      $("motArea").value = "Terrestre";
+      $("motPreview").src = logoFallback();
+      renderCursosTemp();
+    }
+
+
+    async function addEmbarcacao(){
+      if(!state.usuario) return;
+      const prefixo = $("ePrefixo").value.trim().toUpperCase();
+      const tipo = $("eTipo").value.trim();
+      const motor = $("eMotor").value.trim();
+      const potencia = $("ePotencia").value.trim();
+      const status = $("eStatus").value;
+      const observacoes = $("eObs").value.trim();
+      const motivoInoperancia = $("eMotivo").value.trim();
+      const medidorAtual = $("eMedidorAtual").value === "" ? null : Number($("eMedidorAtual").value);
+      if(!prefixo || !tipo){
+        toast("Informe prefixo e tipo da embarcação.");
+        return;
+      }
+      if(state.embarcacoes.some(e => e.prefixo === prefixo)){
+        toast("Esse prefixo já existe.");
+        return;
+      }
+      if(status === "INOPERANTE" && !motivoInoperancia){
+        toast("Informe o motivo da inoperância.");
+        return;
+      }
+      await addDoc(EMBARCACOES_COL, {
+        prefixo, tipo, motor, potencia, status, observacoes,
+        motivoInoperancia: status === "INOPERANTE" ? motivoInoperancia : "",
+        medidorAtual,
+        createdAtMs: Date.now(),
+        updatedAtMs: Date.now(),
+        ultimoRegistroData: ""
+      });
+      await logAction("Embarcação cadastrada", `${prefixo} - ${tipo}`);
+      ["ePrefixo","eTipo","eMotor","ePotencia","eObs","eMotivo","eMedidorAtual"].forEach(id => $(id).value = "");
+      $("eStatus").value = "OPERANDO";
+      toast("Embarcação cadastrada");
+    }
+
+    function limparFormularioAux(){
+      ["auxData","auxMedidor","auxLitros","auxValorTotal","auxValorLitro","auxCombustivel","auxObs","auxTexto","auxFoto"].forEach(id => {
+        if($(id)) $(id).value = "";
+      });
+      state.medidorFotoDataUrl = "";
+      if($("auxPreview")) $("auxPreview").src = logoFallback();
+    }
+
+    async function addMedidorAux(){
+      if(!state.usuario) return;
+      const categoria = $("auxCategoria").value;
+      const itemId = $("auxItemId").value;
+      const data = $("auxData").value;
+      const medidor = $("auxMedidor").value === "" ? null : Number($("auxMedidor").value);
+      const litros = $("auxLitros").value === "" ? null : Number($("auxLitros").value);
+      const valorTotal = $("auxValorTotal").value === "" ? null : Number($("auxValorTotal").value);
+      const valorLitro = $("auxValorLitro").value === "" ? null : Number($("auxValorLitro").value);
+      const combustivel = $("auxCombustivel").value.trim();
+      const observacoes = $("auxObs").value.trim();
+      const textoExtraido = $("auxTexto").value.trim();
+      if(!itemId || medidor === null){
+        toast("Selecione o item e informe o medidor.");
+        return;
+      }
+      const item = categoria === "Embarcação" ? state.embarcacoes.find(x => x.id === itemId) : state.viaturas.find(x => x.id === itemId);
+      const coll = categoria === "Embarcação" ? "cv_embarcacoes" : "cv_viaturas";
+      await addDoc(MED_AUX_COL, {
+        categoria, itemId, data, medidor, litros, valorTotal, valorLitro, combustivel,
+        observacoes, textoExtraido, fotoUrl: state.medidorFotoDataUrl || "",
+        createdAtMs: Date.now(),
+        usuarioNome: state.usuario.nome
+      });
+      await updateDoc(doc(db, coll, itemId), {
+        medidorAtual: medidor,
+        ultimoRegistroData: data || new Date().toISOString().slice(0,10),
+        ultimoRegistroLitros: litros ?? null,
+        ultimoRegistroValor: valorTotal ?? null,
+        ultimoRegistroValorLitro: valorLitro ?? null,
+        updatedAtMs: Date.now()
+      });
+      await logAction("Atualização auxiliar de medidor", `${item?.prefixo || itemId} - ${medidor}`);
+      limparFormularioAux();
+      toast("Medidor atualizado com sucesso");
+    }
+
+
+    async function addUsuario(){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+
+      const nome = $("uNome").value.trim();
+      const rg = $("uRg").value.trim();
+      const login = $("uLogin").value.trim();
+      const senha = $("uSenha").value;
+      const perfil = $("uPerfil").value;
+
+      if(!nome || !login || !senha){
+        toast("Preencha os campos obrigatórios.");
+        return;
+      }
+      if(state.users.some(u => u.login.toLowerCase() === login.toLowerCase())){
+        toast("Esse login já existe.");
+        return;
+      }
+
+      await addDoc(USERS_COL, {
+        nome, rg, login,
+        senhaHash: await sha256(senha),
+        perfil,
+        createdAtMs: Date.now()
+      });
+
+      await logAction("Usuário criado", `${nome} (${perfil})`);
+      ["uNome","uRg","uLogin","uSenha"].forEach(id => $(id).value = "");
+      $("uPerfil").value = "Operador";
+      toast("Usuário criado");
+    }
+
+    async function salvarConfig(){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+
+      const nova = {
+        nome: $("cNome").value.trim() || "Controle de Viaturas",
+        subtitulo: $("cSubtitulo").value.trim() || "Sistema configurável para uso interno por unidade",
+        sigla: $("cSigla").value.trim() || "UNIDADE",
+        cor: $("cCor").value || "#9f0712",
+        logoUrl: $("cLogo").value.trim()
+      };
+
+      await setDoc(CONFIG_DOC, nova, { merge: true });
+      state.config = { ...state.config, ...nova };
+      await logAction("Configurações atualizadas", nova.nome);
+      renderAll();
+      toast("Configurações salvas");
+    }
+
+    function downloadBackup(){
+      const data = {
+        exportadoEm: new Date().toISOString(),
+        config: state.config,
+        users: state.users,
+        viaturas: state.viaturas,
+        manutencoes: state.manutencoes,
+        ordensServico: state.ordensServico,
+        tiposManutencao: state.tiposManutencao,
+        motoristas: state.motoristas,
+        historico: state.historico,
+        embarcacoes: state.embarcacoes,
+        medidoresAux: state.medidoresAux
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "backup-controle-viaturas-elite.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function restoreBackupFile(file){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      if(!file) return;
+      const text = await file.text();
+      const json = JSON.parse(text);
+
+      if(!confirm("Restaurar backup? Isso pode adicionar muitos registros.")) return;
+
+      if(json.config){
+        await setDoc(CONFIG_DOC, json.config, { merge: true });
+      }
+
+      if(Array.isArray(json.users)){
+        for(const u of json.users){
+          const exists = state.users.some(x => x.login === u.login);
+          if(!exists){
+            await addDoc(USERS_COL, {
+              nome: u.nome || "",
+              rg: u.rg || "",
+              login: u.login || "",
+              senhaHash: u.senhaHash || await sha256("123456"),
+              perfil: u.perfil || "Operador",
+              createdAtMs: u.createdAtMs || Date.now()
+            });
+          }
+        }
+      }
+
+      if(Array.isArray(json.ordensServico)){
+        for(const os of json.ordensServico){
+          await addDoc(OS_COL, {
+            itemId: os.itemId || "",
+            tipo: os.tipo || "",
+            status: os.status || "aberta",
+            responsavel: os.responsavel || "",
+            dataAbertura: os.dataAbertura || "",
+            dataAgendada: os.dataAgendada || "",
+            dataConclusao: os.dataConclusao || "",
+            local: os.local || "",
+            descricao: os.descricao || "",
+            observacoes: os.observacoes || "",
+            createdAtMs: os.createdAtMs || Date.now(),
+            updatedAtMs: os.updatedAtMs || Date.now()
+          });
+        }
+      }
+
+      if(Array.isArray(json.tiposManutencao)){
+        for(const t of json.tiposManutencao){
+          const exists = state.tiposManutencao.some(x => (x.nome || "").toLowerCase() === (t.nome || "").toLowerCase());
+          if(!exists && t.nome){
+            await addDoc(TIPOSMANUT_COL, {
+              nome: t.nome || "",
+              descricao: t.descricao || "",
+              ativo: t.ativo !== false,
+              criadoPor: t.criadoPor || "Backup",
+              createdAtMs: t.createdAtMs || Date.now()
+            });
+          }
+        }
+      }
+
+      if(Array.isArray(json.viaturas)){
+        for(const v of json.viaturas){
+          const exists = state.viaturas.some(x => x.prefixo === v.prefixo);
+          if(!exists){
+            await addDoc(VIATURAS_COL, {
+              prefixo: v.prefixo || "",
+              tipo: v.tipo || "Terrestre",
+              descricao: v.descricao || "",
+              placa: v.placa || "",
+              modelo: v.modelo || "",
+              setor: v.setor || "",
+              status: v.status || "OPERANDO",
+              motivoInoperancia: v.motivoInoperancia || "",
+              medidorAtual: v.medidorAtual ?? null,
+              createdAtMs: v.createdAtMs || Date.now(),
+              updatedAtMs: v.updatedAtMs || Date.now()
+            });
+          }
+        }
+      }
+
+      if(Array.isArray(json.manutencoes)){
+        for(const m of json.manutencoes){
+          await addDoc(MANUT_COL, {
+            viaturaId: m.viaturaId || "",
+            tipo: m.tipo || "",
+            data: m.data || "",
+            responsavel: m.responsavel || "",
+            medidor: m.medidor ?? null,
+            periodicidadeMedidor: m.periodicidadeMedidor ?? null,
+            periodicidadeMeses: m.periodicidadeMeses ?? null,
+            medidorAtual: m.medidorAtual ?? null,
+            proximoMedidor: m.proximoMedidor ?? null,
+            proximaData: m.proximaData || null,
+            descricao: m.descricao || "",
+            observacoes: m.observacoes || "",
+            createdAtMs: m.createdAtMs || Date.now()
+          });
+        }
+      }
+
+      if(Array.isArray(json.motoristas)){
+        for(const m of json.motoristas){
+          const exists = state.motoristas.some(x =>
+            (x.nome || "").toLowerCase() === (m.nome || "").toLowerCase() &&
+            (x.cnh || "") === (m.cnh || "")
+          );
+          if(!exists){
+            await addDoc(MOTORISTAS_COL, {
+              nome: m.nome || "",
+              rg: m.rg || "",
+              matricula: m.matricula || "",
+              cnh: m.cnh || "",
+              categoria: m.categoria || "",
+              validadeCnh: m.validadeCnh || "",
+              whatsapp: m.whatsapp || "",
+              funcao: m.funcao || "",
+              observacoes: m.observacoes || "",
+              textoExtraido: m.textoExtraido || "",
+              fotoLivroUrl: m.fotoLivroUrl || "",
+              createdAtMs: m.createdAtMs || Date.now(),
+              updatedAtMs: m.updatedAtMs || Date.now()
+            });
+          }
+        }
+      }
+
+      await logAction("Backup restaurado", file.name || "arquivo");
+      toast("Restauração concluída");
+    }
+
+    async function readFileAsDataURL(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    window.enviarViaturaWhatsApp = function(id){
+      const v = state.viaturas.find(x => x.id === id);
+      if (!v) return;
+
+      const manuts = state.manutencoes.filter(m => m.viaturaId === id);
+      const texto = [
+        `*Viatura ${v.prefixo}*`,
+        `Tipo: ${v.tipo}`,
+        `Status: ${v.status}`,
+        `Descrição: ${v.descricao || "-"}`,
+        `Modelo: ${v.modelo || "-"}`,
+        `Placa/ID: ${v.placa || "-"}`,
+        `Setor: ${v.setor || "-"}`,
+        `Medidor atual: ${v.medidorAtual ?? "-"}`,
+        `Motivo da inoperância: ${v.motivoInoperancia || "-"}`,
+        `Manutenções cadastradas: ${manuts.length}`
+      ].join("\n");
+
+      enviarWhatsApp(texto);
+    };
+
+    window.enviarMotoristaWhatsApp = function(id){
+      const m = state.motoristas.find(x => x.id === id);
+      if(!m) return;
+      const texto = [
+        `*Condutor ${m.nome || "-"}*`,
+        `Função: ${m.funcao || "-"}`,
+        `RG: ${m.rg || "-"}`,
+        `Matrícula: ${m.matricula || "-"}`,
+        `CNH: ${m.cnh || "-"}`,
+        `Categoria: ${m.categoria || "-"}`,
+        `Validade CNH: ${formatDateBR(m.validadeCnh)}`,
+        `Observações: ${m.observacoes || "-"}`
+      ].join("\n");
+      enviarWhatsApp(texto, m.whatsapp || "");
+    };
+
+    window.editarViatura = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+
+      const v = state.viaturas.find(x => x.id === id);
+      if(!v) return;
+
+      const prefixo = prompt("Prefixo:", v.prefixo);
+      if(!prefixo) return;
+      const prefixoFinal = prefixo.trim().toUpperCase();
+      const duplicado = state.viaturas.some(x => x.id !== id && x.prefixo === prefixoFinal);
+      if(duplicado){
+        toast("Já existe outra viatura com esse prefixo.");
+        return;
+      }
+
+      const tipo = prompt("Tipo (Terrestre ou Náutica):", v.tipo) || v.tipo;
+      const descricao = prompt("Descrição:", v.descricao || "") ?? "";
+      const placa = prompt("Placa/Identificador:", v.placa || "") ?? "";
+      const modelo = prompt("Marca/Modelo:", v.modelo || "") ?? "";
+      const setor = prompt("Setor/Guarnição:", v.setor || "") ?? "";
+      const status = (prompt("Status (OPERANDO ou INOPERANTE):", v.status) || v.status).toUpperCase();
+      let motivo = v.motivoInoperancia || "";
+      if(status === "INOPERANTE"){
+        motivo = prompt("Motivo da inoperância:", motivo) || motivo;
+        if(!motivo){
+          toast("Motivo da inoperância é obrigatório.");
+          return;
+        }
+      } else {
+        motivo = "";
+      }
+      const medidorStr = prompt("Medidor atual:", v.medidorAtual ?? "");
+      const medidorAtual = medidorStr === "" ? null : Number(medidorStr);
+
+      await updateDoc(doc(db, "cv_viaturas", id), {
+        prefixo: prefixoFinal,
+        tipo: tipo === "Náutica" ? "Náutica" : "Terrestre",
+        descricao: descricao.trim(),
+        placa: placa.trim().toUpperCase(),
+        modelo: modelo.trim(),
+        setor: setor.trim(),
+        status: status === "INOPERANTE" ? "INOPERANTE" : "OPERANDO",
+        motivoInoperancia: motivo.trim(),
+        medidorAtual,
+        updatedAtMs: Date.now()
+      });
+
+      await logAction("Viatura editada", `${v.prefixo} -> ${prefixoFinal}`);
+      toast("Viatura atualizada");
+    };
+
+    window.excluirViatura = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      const v = state.viaturas.find(x => x.id === id);
+      const vinculadas = state.manutencoes.some(m => m.viaturaId === id);
+      if(vinculadas){
+        toast("Exclua as manutenções dessa viatura antes.");
+        return;
+      }
+      if(!confirm(`Excluir a viatura ${v?.prefixo || ""}?`)) return;
+      await deleteDoc(doc(db, "cv_viaturas", id));
+      await logAction("Viatura excluída", v?.prefixo || id);
+      toast("Viatura excluída");
+    };
+
+    window.excluirManut = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      if(!confirm("Excluir esta manutenção?")) return;
+      await deleteDoc(doc(db, "cv_manutencoes", id));
+      await logAction("Manutenção excluída", id);
+      toast("Manutenção excluída");
+    };
+
+    window.editarMotorista = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      const m = state.motoristas.find(x => x.id === id);
+      if(!m) return;
+
+      const nome = prompt("Nome:", m.nome || "");
+      if(!nome) return;
+      const rg = prompt("RG:", m.rg || "") ?? "";
+      const matricula = prompt("Matrícula:", m.matricula || "") ?? "";
+      const cnh = prompt("CNH:", m.cnh || "") ?? "";
+      const categoria = prompt("Categoria:", m.categoria || "") ?? "";
+      const validadeCnh = prompt("Validade CNH (AAAA-MM-DD):", m.validadeCnh || "") ?? "";
+      const whatsapp = prompt("WhatsApp:", m.whatsapp || "") ?? "";
+      const funcao = prompt("Função:", m.funcao || "") ?? "";
+      const areaAtuacao = prompt("Área de atuação (Terrestre / Náutica / Ambos):", m.areaAtuacao || "Terrestre") ?? "Terrestre";
+      const observacoes = prompt("Observações:", m.observacoes || "") ?? "";
+      const textoExtraido = prompt("Texto extraído/registro:", m.textoExtraido || "") ?? "";
+
+      await updateDoc(doc(db, "cv_motoristas", id), {
+        nome: nome.trim(),
+        rg: rg.trim(),
+        matricula: matricula.trim(),
+        cnh: cnh.trim(),
+        categoria: categoria.trim().toUpperCase(),
+        validadeCnh: validadeCnh.trim(),
+        whatsapp: whatsapp.trim(),
+        funcao: funcao.trim(),
+        areaAtuacao: areaAtuacao.trim(),
+        observacoes: observacoes.trim(),
+        textoExtraido: textoExtraido.trim(),
+        updatedAtMs: Date.now()
+      });
+
+      await logAction("Motorista editado", nome.trim());
+      toast("Motorista atualizado");
+    };
+
+    window.excluirMotorista = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      const m = state.motoristas.find(x => x.id === id);
+      if(!confirm(`Excluir o motorista ${m?.nome || ""}?`)) return;
+      await deleteDoc(doc(db, "cv_motoristas", id));
+      await logAction("Motorista excluído", m?.nome || id);
+      toast("Motorista excluído");
+    };
+
+
+    window.removerCursoTemp = function(idx){
+      state.cursosTemp.splice(idx, 1);
+      renderCursosTemp();
+    };
+
+    window.enviarEmbarcacaoWhatsApp = function(id){
+      const e = state.embarcacoes.find(x => x.id === id);
+      if(!e) return;
+      const texto = [
+        `*Embarcação ${e.prefixo || "-"}*`,
+        `Tipo: ${e.tipo || "-"}`,
+        `Motor: ${e.motor || "-"}`,
+        `Potência: ${e.potencia || "-"}`,
+        `Status: ${e.status || "-"}`,
+        `Horas atuais: ${e.medidorAtual ?? "-"}`,
+        `Observações: ${e.observacoes || "-"}`,
+        `Motivo da inoperância: ${e.motivoInoperancia || "-"}`
+      ].join("\n");
+      enviarWhatsApp(texto);
+    };
+
+    window.editarEmbarcacao = async function(id){
+      if(!isAdmin()) return toast("Somente administrador.");
+      const e = state.embarcacoes.find(x => x.id === id);
+      if(!e) return;
+      const prefixo = prompt("Prefixo:", e.prefixo || "");
+      if(!prefixo) return;
+      const tipo = prompt("Tipo:", e.tipo || "") ?? "";
+      const motor = prompt("Motor:", e.motor || "") ?? "";
+      const potencia = prompt("Potência:", e.potencia || "") ?? "";
+      const status = (prompt("Status (OPERANDO ou INOPERANTE):", e.status || "OPERANDO") || "OPERANDO").toUpperCase();
+      const medidorStr = prompt("Horas atuais:", e.medidorAtual ?? "");
+      const observacoes = prompt("Observações:", e.observacoes || "") ?? "";
+      let motivoInoperancia = e.motivoInoperancia || "";
+      if(status === "INOPERANTE") motivoInoperancia = prompt("Motivo da inoperância:", motivoInoperancia) || motivoInoperancia;
+      await updateDoc(doc(db, "cv_embarcacoes", id), {
+        prefixo: prefixo.trim().toUpperCase(),
+        tipo: tipo.trim(),
+        motor: motor.trim(),
+        potencia: potencia.trim(),
+        status: status === "INOPERANTE" ? "INOPERANTE" : "OPERANDO",
+        medidorAtual: medidorStr === "" ? null : Number(medidorStr),
+        observacoes: observacoes.trim(),
+        motivoInoperancia: status === "INOPERANTE" ? motivoInoperancia.trim() : "",
+        updatedAtMs: Date.now()
+      });
+      await logAction("Embarcação editada", prefixo.trim().toUpperCase());
+      toast("Embarcação atualizada");
+    };
+
+    window.excluirEmbarcacao = async function(id){
+      if(!isAdmin()) return toast("Somente administrador.");
+      const e = state.embarcacoes.find(x => x.id === id);
+      const vinculadas = state.manutencoes.some(m => m.viaturaId === id);
+      if(vinculadas) return toast("Exclua as manutenções dessa embarcação antes.");
+      if(!confirm(`Excluir a embarcação ${e?.prefixo || ""}?`)) return;
+      await deleteDoc(doc(db, "cv_embarcacoes", id));
+      await logAction("Embarcação excluída", e?.prefixo || id);
+      toast("Embarcação excluída");
+    };
+
+    async function trocarMinhaSenha(){
+      if(!state.usuario) return;
+      const novaSenha = prompt("Digite a nova senha:", "");
+      if(!novaSenha) return;
+      if(novaSenha.length < 4) return toast("Senha muito curta.");
+      await updateDoc(doc(db, "cv_users", state.usuario.id), {
+        senhaHash: await sha256(novaSenha)
+      });
+      await logAction("Senha alterada", state.usuario.nome);
+      toast("Senha atualizada");
+    }
+
+
+
+    window.usarOSNaManutencao = function(id){
+      const os = state.ordensServico.find(x => x.id === id);
+      if(!os) return;
+      if($("mLinkedOSId")) $("mLinkedOSId").value = id;
+      if($("mViatura")) $("mViatura").value = os.itemId || "";
+      if($("mTipo")){
+        const existe = [...$("mTipo").options].some(o => o.value === (os.tipo || ""));
+        $("mTipo").value = existe ? (os.tipo || "") : "__novo__";
+      }
+      if($("novoTipoContainer")) $("novoTipoContainer").classList.toggle("hidden", $("mTipo").value !== "__novo__");
+      if($("novoTipoNome") && $("mTipo").value === "__novo__") $("novoTipoNome").value = os.tipo || "";
+      if($("mDescricao")) $("mDescricao").value = os.descricao || "";
+      if($("mObs")) $("mObs").value = os.observacoes || "";
+      if($("mData")) $("mData").value = new Date().toISOString().slice(0,10);
+      switchView("manutencoes");
+      toast("OS carregada no cadastro de manutenção");
+    };
+
+    window.excluirOS = async function(id){
+      if(!isAdmin()) return toast("Somente administrador.");
+      const os = state.ordensServico.find(x => x.id === id);
+      if(!confirm("Excluir esta ordem de serviço?")) return;
+      await deleteDoc(doc(db, "cv_ordens_servico", id));
+      await logAction("OS excluída", `${os?.tipo || id}`);
+      toast("Ordem de serviço excluída");
+    };
+
+    window.excluirTipoManut = async function(id){
+      if(!isAdmin()) return toast("Somente administrador.");
+      const tipo = state.tiposManutencao.find(x => x.id === id);
+      if(!tipo) return;
+      if(!confirm(`Excluir o tipo ${tipo.nome}?`)) return;
+      await deleteDoc(doc(db, "cv_tipos_manutencao", id));
+      await logAction("Tipo de manutenção excluído", tipo.nome || id);
+      toast("Tipo excluído");
+    };
+
+
+    window.excluirUsuario = async function(id){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      if(id === state.usuario?.id){
+        toast("Você não pode excluir seu próprio usuário logado.");
+        return;
+      }
+      const alvo = state.users.find(u => u.id === id);
+      if(alvo?.login === "admin" && state.users.filter(u => u.perfil === "Administrador").length <= 1){
+        toast("Não é permitido excluir o único administrador.");
+        return;
+      }
+      if(!confirm("Excluir este usuário?")) return;
+      await deleteDoc(doc(db, "cv_users", id));
+      await logAction("Usuário excluído", alvo?.nome || id);
+      toast("Usuário excluído");
+    };
+
+    window.resetSenhaUsuario = async function(id, nome){
+      if(!isAdmin()){
+        toast("Somente administrador.");
+        return;
+      }
+      const novaSenha = prompt(`Nova senha para ${nome}:`, "123456");
+      if(!novaSenha) return;
+      if(novaSenha.length < 4){
+        toast("Senha muito curta.");
+        return;
+      }
+      await updateDoc(doc(db, "cv_users", id), {
+        senhaHash: await sha256(novaSenha)
+      });
+      await logAction("Senha redefinida", `Usuário: ${nome}`);
+      toast("Senha redefinida");
+    };
+
+    function bindEvents(){
+      onSafe("btnGoLogin", "click", () => showScreen("loginScreen"));
+      onSafe("btnVoltarCapa", "click", () => showScreen("coverScreen"));
+      onSafe("btnGoReport", "click", () => {
+        if(!state.usuario){
+          showScreen("loginScreen");
+          $("loginMsg").textContent = "Faça login para acessar relatórios.";
+        } else {
+          showScreen("appScreen");
+          switchView("relatorios");
+        }
+      });
+
+      onSafe("btnLogin", "click", login);
+      onSafe("loginPass", "keydown", e => { if(e.key === "Enter") login(); });
+      onSafe("btnPadrao", "click", () => {
+        $("loginUser").value = "admin";
+        $("loginPass").value = "admin123";
+      });
+
+      onSafe("btnLogout", "click", () => {
+        state.usuario = null;
+        localStorage.removeItem("cv_session");
+        renderAll();
+      });
+
+      onSafe("btnPrint", "click", () => window.print());
+      onSafe("btnPrintRelatorio", "click", () => {
+        switchView("relatorios");
+        window.print();
+      });
+
+      onSafe("btnWhatsHeader", "click", () => enviarWhatsApp(buildResumoWhatsApp()));
+      onSafe("btnWhatsRelatorio", "click", () => enviarWhatsApp(buildResumoWhatsApp()));
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.addEventListener("click", () => switchView(btn.dataset.view));
+      });
+
+      onSafe("vStatus", "change", () => {
+        if($("vStatus").value === "INOPERANTE"){
+          $("vMotivo").focus();
+        }
+      });
+
+      onSafe("btnAddViatura", "click", addViatura);
+      onSafe("btnAddEmbarcacao", "click", addEmbarcacao);
+      onSafe("btnAddOS", "click", addOS);
+      onSafe("btnLimparOS", "click", limparFormularioOS);
+      onSafe("btnAddManut", "click", addManut);
+      onSafe("btnLimparManutVinculo", "click", limparVinculoOSNaManutencao);
+      onSafe("btnAddMotorista", "click", addMotorista);
+      onSafe("btnAddUsuario", "click", addUsuario);
+      onSafe("btnSalvarConfig", "click", salvarConfig);
+      onSafe("btnTrocarMinhaSenha", "click", trocarMinhaSenha);
+      onSafe("btnBackup", "click", downloadBackup);
+      onSafe("btnLimparFotoMotorista", "click", limparFormularioMotorista);
+      onSafe("btnSalvarMedidorAux", "click", addMedidorAux);
+      onSafe("btnLimparAux", "click", limparFormularioAux);
+      onSafe("btnAddCursoCondutor", "click", () => {
+        const nome = $("motCursoNome").value.trim();
+        const validade = $("motCursoValidade").value;
+        if(!nome){
+          return toast("Informe o nome do curso.");
+        }
+        state.cursosTemp.push({ nome, validade });
+        $("motCursoNome").value = "";
+        $("motCursoValidade").value = "";
+        renderCursosTemp();
+      });
+
+      onSafe("btnLerLivroAssistido", "click", () => {
+        const texto = prompt("Cole aqui o texto identificado do livro do condutor para preenchimento automático:", $("motTextoExtraido").value || "");
+        if(texto === null) return;
+        const ok = preencherCondutorPorTexto(texto);
+        toast(ok ? "Campos do condutor preenchidos." : "Não consegui identificar os dados principais.");
+      });
+
+      onSafe("btnColarTextoLivro", "click", () => {
+        const texto = prompt("Cole o texto do livro do condutor:", $("motTextoExtraido").value || "");
+        if(texto === null) return;
+        $("motTextoExtraido").value = texto;
+      });
+
+      onSafe("btnLerComprovanteAssistido", "click", () => {
+        const texto = prompt("Cole aqui o texto identificado do comprovante/livro para preencher medidor, litros, valores e data:", $("auxTexto").value || "");
+        if(texto === null) return;
+        const ok = preencherComprovantePorTexto(texto);
+        toast(ok ? "Campos do comprovante preenchidos." : "Não consegui identificar os dados principais.");
+      });
+
+      onSafe("btnColarTextoComprovante", "click", () => {
+        const texto = prompt("Cole o texto do comprovante/livro:", $("auxTexto").value || "");
+        if(texto === null) return;
+        $("auxTexto").value = texto;
+      });
+
+      onSafe("btnAjudaIA", "click", () => {
+        alert(
+`Leitura automática com IA: esta versão já está pronta para foto e registro.
+Para leitura automática do livro, o próximo passo é ligar uma função serverless (Netlify Function) com OCR/IA.
+Estrutura recomendada:
+1) tirar foto
+2) enviar imagem para a função
+3) a função extrai nome, RG, matrícula, CNH, categoria e validade
+4) devolve os campos preenchidos para conferência
+5) salvar no Firestore`
+        );
+      });
+
+      onSafe("motFoto", "change", async (e) => {
+        const file = e.target.files?.[0];
+        if(!file) return;
+        try{
+          state.motoristaFotoDataUrl = await readFileAsDataURL(file);
+          $("motPreview").src = state.motoristaFotoDataUrl;
+        }catch(err){
+          console.error(err);
+          toast("Falha ao ler a foto.");
+        }
+      });
+
+      onSafe("auxFoto", "change", async (e) => {
+        const file = e.target.files?.[0];
+        if(!file) return;
+        try{
+          state.medidorFotoDataUrl = await readFileAsDataURL(file);
+          $("auxPreview").src = state.medidorFotoDataUrl;
+        }catch(err){
+          console.error(err);
+          toast("Falha ao ler a foto do comprovante.");
+        }
+      });
+
+      onSafe("auxCategoria", "change", preencherSelectAuxItem);
+      onSafe("mTipo", "change", () => {
+        if($("novoTipoContainer")) $("novoTipoContainer").classList.toggle("hidden", $("mTipo").value !== "__novo__");
+      });
+
+      onSafe("restoreInput", "change", async (e) => {
+        const file = e.target.files?.[0];
+        if(file) await restoreBackupFile(file);
+        e.target.value = "";
+      });
+
+      ["cNome","cSubtitulo","cSigla","cCor","cLogo"].forEach(id => {
+        const el = $(id);
+        if(el) el.addEventListener("input", () => {
+          $("previewNome").textContent = $("cNome").value || "Controle de Viaturas";
+          $("previewSubtitulo").textContent = $("cSubtitulo").value || "Sistema configurável para uso interno por unidade";
+          $("previewHeader").style.background = $("cCor").value || "#9f0712";
+          $("previewLogo").src = $("cLogo").value.trim() || logoFallback();
+        });
+      });
+
+      ["buscaPainel","buscaResumoViaturas","buscaResumoTropa","filtroViaturaBusca","filtroViaturaTipo","filtroViaturaStatus","filtroEmbarcacaoBusca","filtroOSBusca","filtroOSStatus","filtroManutBusca","filtroManutStatus","filtroHistoricoBusca","filtroMotoristaBusca"].forEach(id => {
+        const el = $(id);
+        if(el){
+          el.addEventListener("input", renderAll);
+          el.addEventListener("change", renderAll);
+        }
+      });
+    }
+
+    function listenRealtime(){
+      onSnapshot(CONFIG_DOC, snap => {
+        if(snap.exists()) state.config = { ...state.config, ...snap.data() };
+        setBranding();
+      });
+
+      onSnapshot(USERS_COL, snap => {
+        state.users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        syncSessionUser().then(renderAll);
+      });
+
+      onSnapshot(VIATURAS_COL, snap => {
+        state.viaturas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(MANUT_COL, snap => {
+        state.manutencoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(OS_COL, snap => {
+        state.ordensServico = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(TIPOSMANUT_COL, snap => {
+        state.tiposManutencao = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(MOTORISTAS_COL, snap => {
+        state.motoristas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(EMBARCACOES_COL, snap => {
+        state.embarcacoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(MED_AUX_COL, snap => {
+        state.medidoresAux = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+
+      onSnapshot(query(HIST_COL, orderBy("createdAtMs", "desc")), snap => {
+        state.historico = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAll();
+      });
+    }
+
+    async function start(){
+      bindEvents();
+      restoreSession();
+      setBranding();
+      renderCursosTemp();
+      if($("auxPreview")) $("auxPreview").src = logoFallback();
+      if($("osDataAbertura")) $("osDataAbertura").value = new Date().toISOString().slice(0,10);
+      switchView("painel");
+      await ensureInitialData();
+      listenRealtime();
+      state.loading = false;
+      renderAll();
+    }
+
+    start().catch(err => {
+      console.error(err);
+      state.loading = false;
+      $("loadingScreen").innerHTML = `
+        <div class="card p-8 text-center max-w-xl w-full">
+          <div class="text-2xl font-black danger">Erro ao iniciar o sistema</div>
+          <div class="muted mt-2">Confira o firebaseConfig e as regras do Firestore.</div>
+          <pre class="mt-4 text-left text-xs bg-slate-100 p-4 rounded-2xl overflow-auto">${String(err)}</pre>
+        </div>
+      `;
+    });
+  </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(err => console.error("Erro ao registrar service worker:", err));
+  });
+}
+</script>
+</body>
+</html>
