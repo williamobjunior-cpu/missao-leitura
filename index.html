@@ -35,11 +35,11 @@ input,select{width:100%;border:3px solid rgba(255,255,255,.8);border-radius:24px
 .btn:active{transform:translateY(5px) scale(.94);box-shadow:0 3px 0 rgba(0,0,0,.22)}.green{background:linear-gradient(135deg,#22c55e,#16a34a)}.yellow{background:linear-gradient(135deg,#facc15,#fb923c);color:#3b2200}.red{background:linear-gradient(135deg,#fb7185,#ef4444)}.purple{background:linear-gradient(135deg,#c084fc,#7c3aed)}.dark{background:linear-gradient(135deg,#64748b,#334155)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid .btn{margin-top:0}
 .careerGrid{height:calc(100vh - 250px);overflow:auto;padding:4px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.career{height:170px;border:4px solid rgba(255,255,255,.65);border-radius:30px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 10px 0 rgba(0,0,0,.22);transition:.12s}.career:active{transform:scale(.94)}.career:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(15,23,42,.82))}
+.career{height:170px;background-color:#123;background-image:linear-gradient(135deg,#b91c1c,#f97316);border:4px solid rgba(255,255,255,.65);border-radius:30px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 10px 0 rgba(0,0,0,.22);transition:.12s}.career:active{transform:scale(.94)}.career:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(15,23,42,.82))}
 .careerName{position:absolute;left:8px;right:8px;bottom:10px;z-index:2;font-size:19px;font-weight:1000;text-align:center;text-shadow:0 3px 0 #000}.lockBadge{position:absolute;top:10px;right:10px;z-index:3;font-size:25px;background:rgba(15,23,42,.7);border-radius:14px;padding:5px}.free{background:#22c55e;color:white;border-radius:999px;padding:4px 8px;font-size:11px;margin-top:4px;display:inline-block}
 .mapWrap{height:100vh;overflow:auto;padding-top:70px;padding-bottom:96px}.worldMap{position:relative;width:1460px;height:1100px;margin:auto}.ocean{position:absolute;inset:0;border-radius:50px;background:radial-gradient(circle at 30% 20%,#7dd3fc,#0ea5e9 48%,#1d4ed8);box-shadow:inset 0 0 45px rgba(255,255,255,.25);overflow:hidden}.ocean:before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(120deg,rgba(255,255,255,.18) 0 2px,transparent 2px 42px);animation:waves 8s linear infinite;opacity:.45}@keyframes waves{to{transform:translateX(-120px)}}
 .path{position:absolute;height:14px;border-radius:999px;background:repeating-linear-gradient(90deg,#fff 0 20px,rgba(255,255,255,.0) 20px 38px);opacity:.9;animation:path 1.2s linear infinite;box-shadow:0 0 18px rgba(255,255,255,.9)}@keyframes path{to{background-position:78px 0}}
-.island{position:absolute;width:245px;height:178px;border-radius:42px;overflow:hidden;background-size:cover;background-position:center;border:4px solid rgba(255,255,255,.75);box-shadow:0 18px 32px rgba(0,0,0,.35);animation:float 4s ease-in-out infinite;z-index:2}@keyframes float{50%{transform:translateY(-10px)}}.island.locked{filter:grayscale(.85) brightness(.48)}.island:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.82))}
+.island{position:absolute;background-color:#123;background-image:linear-gradient(135deg,#0ea5e9,#7c3aed);width:245px;height:178px;border-radius:42px;overflow:hidden;background-size:cover;background-position:center;border:4px solid rgba(255,255,255,.75);box-shadow:0 18px 32px rgba(0,0,0,.35);animation:float 4s ease-in-out infinite;z-index:2}@keyframes float{50%{transform:translateY(-10px)}}.island.locked{filter:grayscale(.85) brightness(.48)}.island:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.82))}
 .islandLabel{position:absolute;z-index:3;left:8px;right:8px;bottom:8px;font-weight:1000;text-align:center;text-shadow:0 3px 0 #000;font-size:18px}.req{font-size:12px;opacity:.9}.lock{position:absolute;z-index:4;top:48%;left:50%;transform:translate(-50%,-50%);font-size:48px;animation:lock 2s infinite ease}@keyframes lock{50%{transform:translate(-50%,-64%)}}
 .player{position:absolute;width:82px;height:82px;border-radius:26px;background:white;border:5px solid var(--c);z-index:8;display:grid;place-items:center;font-size:41px;box-shadow:0 10px 0 rgba(0,0,0,.25);transition:1s cubic-bezier(.6,-.2,.7,1.2);animation:token 1.6s infinite ease}@keyframes token{50%{transform:translateY(-9px) scale(1.05)}}
 .bottom{position:fixed;left:8px;right:8px;bottom:8px;z-index:60;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.bottom .btn{margin:0;padding:13px 5px;font-size:12px}
@@ -303,25 +303,39 @@ function words(t){return norm(t).split(" ").filter(w=>w.length>1&&!["o","a","e",
 function guide(){clearInterval(guidedTimer);let ws=[...document.querySelectorAll(".word")],i=0;ws.forEach(w=>w.classList.remove("active"));guidedTimer=setInterval(()=>{ws.forEach(w=>w.classList.remove("active"));if(i>=ws.length){clearInterval(guidedTimer);return}ws[i++].classList.add("active")},800)}
 
 
+
 const PHONETIC_MAP = {
-  CHA:"xa", CHE:"xe", CHI:"xi", CHO:"xo", CHU:"xu",
-  NHA:"nha", NHE:"nhe", NHI:"nhi", NHO:"nho", NHU:"nhu",
-  LHA:"lha", LHE:"lhe", LHI:"lhi", LHO:"lho", LHU:"lhu",
-  BRA:"bra", BRE:"bre", BRI:"bri", BRO:"bro", BRU:"bru",
-  PRA:"pra", PRE:"pre", PRI:"pri", PRO:"pro", PRU:"pru",
-  TRA:"tra", TRE:"tre", TRI:"tri", TRO:"tro", TRU:"tru",
-  BA:"ba", BE:"be", BI:"bi", BO:"bo", BU:"bu",
-  PA:"pa", PE:"pe", PI:"pi", PO:"po", PU:"pu",
-  MA:"ma", ME:"me", MI:"mi", MO:"mo", MU:"mu",
-  LA:"la", LE:"le", LI:"li", LO:"lo", LU:"lu",
-  MP:"eme antes de p", MB:"eme antes de b",
-  RR:"erre forte", SS:"esse com som de s", QU:"que", GU:"gue"
+  CHA:"XA", CHE:"XE", CHI:"XI", CHO:"XO", CHU:"XU",
+  NHA:"NHA", NHE:"NHE", NHI:"NHI", NHO:"NHO", NHU:"NHU",
+  LHA:"LHA", LHE:"LHE", LHI:"LHI", LHO:"LHO", LHU:"LHU",
+  BRA:"BRA", BRE:"BRE", BRI:"BRI", BRO:"BRO", BRU:"BRU",
+  PRA:"PRA", PRE:"PRE", PRI:"PRI", PRO:"PRO", PRU:"PRU",
+  TRA:"TRA", TRE:"TRE", TRI:"TRI", TRO:"TRO", TRU:"TRU",
+  BA:"BA", BE:"BE", BI:"BI", BO:"BO", BU:"BU",
+  PA:"PA", PE:"PE", PI:"PI", PO:"PO", PU:"PU",
+  MA:"MA", ME:"ME", MI:"MI", MO:"MO", MU:"MU",
+  LA:"LA", LE:"LE", LI:"LI", LO:"LO", LU:"LU",
+  MP:"M antes de P", MB:"M antes de B",
+  RR:"R forte", SS:"som de S", QU:"QUE", GU:"GUE"
 };
 
-/* ===== ENGINE DE VOZ E FONÉTICA ===== */
+const PHONETIC_SPEAK = {
+  CHA:"xa de xave", CHE:"xe de xerife", CHI:"xi de xicara", CHO:"xo de xodó", CHU:"xu de chuva",
+  NHA:"nha de nhoque", NHE:"nhe", NHI:"nhi", NHO:"nho de nhoque", NHU:"nhu",
+  LHA:"lha de palha", LHE:"lhe de mulher", LHI:"lhi", LHO:"lho de milho", LHU:"lhu",
+  BRA:"bra de braço", BRE:"bre", BRI:"bri de brilho", BRO:"bro", BRU:"bru",
+  PRA:"pra de prato", PRE:"pre de presente", PRI:"pri de primo", PRO:"pro", PRU:"pru",
+  TRA:"tra de trabalho", TRE:"tre de trem", TRI:"tri de trigo", TRO:"tro de troca", TRU:"tru",
+  BA:"ba de bala", BE:"be de bebe", BI:"bi de bico", BO:"bo de bola", BU:"bu de burro",
+  PA:"pa de pato", PE:"pe de pedra", PI:"pi de pipa", PO:"po de pote", PU:"pu de pulo",
+  MA:"ma de mala", ME:"me de mesa", MI:"mi de milho", MO:"mo de moto", MU:"mu de muro",
+  LA:"la de lata", LE:"le de leitura", LI:"li de livro", LO:"lo de lobo", LU:"lu de lua",
+  MP:"M antes de P, como em campo", MB:"M antes de B, como em tambor",
+  RR:"R forte, como em carro", SS:"som de S, como em passo", QU:"que de queijo", GU:"gue de guerra"
+};
+
 function cleanSpeakText(t){
   let text = String(t||"");
-
   text = text
     .replace(/GO+L/gi,"golaco")
     .replace(/Goooo+ol/gi,"golaco")
@@ -334,12 +348,10 @@ function cleanSpeakText(t){
     .replace(/VAAALENDO/gi,"Valendo");
 
   const ordered = Object.keys(PHONETIC_MAP).sort((a,b)=>b.length-a.length);
-
   ordered.forEach(key=>{
-    const safe = key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    const safe = key;
     text = text.replace(new RegExp("\b"+safe+"\b","g"), PHONETIC_MAP[key]);
   });
-
   return text;
 }
 
@@ -348,21 +360,18 @@ function speakNatural(text, opts={}){
     speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(cleanSpeakText(text));
     utter.lang = "pt-BR";
-    utter.rate = opts.rate || 0.82;
+    utter.rate = opts.rate || 0.78;
     utter.pitch = opts.pitch || 1.0;
     utter.volume = 1;
-
     const voices = speechSynthesis.getVoices();
-    const br = voices.find(v =>
-      /pt-BR|Brazil|Brasil|Portuguese/i.test((v.lang||"")+" "+(v.name||""))
-    );
+    const br = voices.find(v => /pt-BR|Brazil|Brasil|Portuguese/i.test((v.lang||"")+" "+(v.name||"")));
     if(br) utter.voice = br;
-
     speechSynthesis.speak(utter);
   }catch(e){}
 }
 
 function speak(t){speakNatural(t)}
+
 
 function speakPhrase(){speakNatural("Valendo! "+$("phrase").innerText,{rate:.82,pitch:1.05})}
 function listen(){
@@ -435,19 +444,21 @@ function confetti(q){const colors=["#facc15","#fb7185","#38bdf8","#22c55e","#a78
 function setTrain(m){train=m;trainIndex=0;nextTrain()}
 function nextTrain(){let list=TRAIN[train];let arr=list[trainIndex++%list.length];$("trainText").innerText=arr.join(" ");$("syllables").innerHTML=arr.map(s=>`<div class="syllable" onclick="speakSyllable('${s}')">${s}</div>`).join("")}
 
+
 function syllableSound(s){
-  return PHONETIC_MAP[s] || String(s||"").toLowerCase();
+  return PHONETIC_MAP[s] || String(s||"").toUpperCase();
 }
-
+function syllableSpeakText(s){
+  return PHONETIC_SPEAK[s] || syllableSound(s);
+}
 function speakSyllable(s){
-  const som = syllableSound(s);
-  speakNatural(s + ". Som de " + som, {rate:0.68, pitch:0.95});
+  const som = syllableSpeakText(s);
+  speakNatural(s + ". Tem som de " + som + ".", {rate:0.68, pitch:0.95});
 }
-
 function speakTrain(){
   const arr = $("trainText").innerText.trim().split(" ");
-  const leitura = arr.map(s => syllableSound(s)).join(". ");
-  speakNatural(leitura, {rate:0.62, pitch:1.0});
+  const leitura = arr.map(s => s + ". " + syllableSpeakText(s) + ".").join(" ");
+  speakNatural(leitura, {rate:0.62, pitch:0.95});
 }
 
 /* ===== PAINEL DOS PAIS ===== */
@@ -603,7 +614,7 @@ function launchManualCall(){
   openCall(c,testOnly);
 }
 
-document.addEventListener("click",e=>{let w=e.target.closest(".word");if(w)speak(w.innerText)})
+document.addEventListener("click",e=>{let w=e.target.closest(".word");if(w)speakNatural(w.innerText,{rate:.76,pitch:1.0})})
 document.addEventListener("DOMContentLoaded",()=>{applyNightMode();if(active())show("map");update();nextTrain();renderPrestige();renderPriorityCareerSelect();spawnMapSparks()})
 </script>
 </body>
