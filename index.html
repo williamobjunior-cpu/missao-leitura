@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Missão Leitura V20.5 Imagens Limpas 15 Ajustada</title>
+<title>Missão Leitura V20.7 Imagens Limpas 15 Ajustada</title>
 <style>
 :root{--a:#0ea5e9;--b:#7c3aed;--c:#facc15;--neon:#38bdf8;--accent:#f97316}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -181,6 +181,22 @@ body.night .bg:before{opacity:.55}
   margin-top:8px;
 }
 
+.status{position:relative;z-index:1;min-height:24px}
+
+.player{
+  animation: commanderIdle 2s ease-in-out infinite !important;
+}
+.stageHero{
+  animation: heroBreath 3s ease-in-out infinite;
+}
+@keyframes heroBreath{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.012)}
+}
+.stageHero.victory{
+  animation:victoryJump .7s ease, heroBreath 3s ease-in-out infinite .8s;
+}
+
 @media(max-width:560px){.careerGrid{grid-template-columns:1fr;height:calc(100vh - 255px)}.stageHero{height:225px}.grid{grid-template-columns:1fr}.worldMap{zoom:.58;transform:none;transform-origin:top left;height:1100px;width:1460px}.mapWrap{padding-top:75px;max-height:calc(100vh - 80px)}.bottom{grid-template-columns:repeat(2,1fr)}.hudBox b{font-size:15px}}
 </style>
 </head>
@@ -293,7 +309,7 @@ function chooseCareer(id,testOnly=false){let first=!active(), c=CAREERS.find(x=>
 function update(){let c=career();document.body.className=c.theme;$("xpHud").innerText=xp();$("coinHud").innerText=coins();$("rankHud").innerText=rank()[0];$("playerName").value=get("ml17_player","");$("stageHero").style.backgroundImage=`url('${c.img}')`;$("missionTitle").innerText=c.title;$("missionStory").innerText=c.mission;let nr=nextRank();$("xpFill").style.width=nr?Math.min(xp()/nr[1]*100,100)+"%":"100%";$("rewardLabel").innerText=`+${careerXpReward(c.id)} XP • +${careerCoinReward(c.id)} moedas • +${careerRewardTime(c.id)} min`;renderMap();renderCareers();if($("prestigeList"))renderPrestige();if(!$("phrase").innerText)newPhrase()}
 /* ===== ENGINE DO MAPA ===== */
 function renderMap(){let arr=unlocked(), first=!active(), visible=CAREERS.filter(c=>isCareerEnabled(c.id)||first), ids=visible.map(c=>c.id), paths="";for(let i=0;i<ids.length-1;i++){let a=POS[ids[i]],b=POS[ids[i+1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;paths+=`<div class="path" style="left:${a[0]+120}px;top:${a[1]+84}px;width:${len}px;transform:rotate(${ang}deg);transform-origin:left center"></div>`}$("paths").innerHTML=paths;let html="";visible.forEach(c=>{let p=POS[c.id],u=arr.includes(c.id)||first||xp()>=c.unlock;html+=`<div class="island ${u?'':'locked'} ${get('ml17_priority_career','')===c.id?'priorityIsland':''}" onclick="moveToCareer('${c.id}')" style="left:${p[0]}px;top:${p[1]}px;background-image:url('${c.img}')">${get('ml17_priority_career','')===c.id?'<div class="priorityTag">⭐ PRIORIDADE</div>':''}${u?'':'<div class="lock">🔒</div>'}<div class="islandLabel">${c.icon} ${c.name}<div class="req">${u?'Liberado':'Precisa '+c.unlock+' XP'}</div></div></div>`});$("islands").innerHTML=html;let p=POS[active()]||POS.cbmerj;$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";let eq=get("ml17_equipped_item","");let item=prestigeItems?prestigeItems().find(x=>x.id===eq):null;$("player").innerText=(item?item.icon:career(active()||"cbmerj").icon)}
-function moveToCareer(id){let c=CAREERS.find(x=>x.id===id), arr=unlocked(), first=!active();if(!first&&!arr.includes(id)&&xp()<c.unlock){chooseCareer(id);return}chooseCareer(id);let p=POS[id];$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";animateAvatarArc();speakNatural("Comunicação recebida. Indo para "+c.full+"!",{rate:.78,pitch:.96});setTimeout(()=>show("game"),900)}
+function moveToCareer(id){let c=CAREERS.find(x=>x.id===id), arr=unlocked(), first=!active();if(!first&&!arr.includes(id)&&xp()<c.unlock){chooseCareer(id);return}chooseCareer(id);let p=POS[id];$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";animateAvatarArc();speakNatural("Comunicacao recebida. Indo para "+c.full+"!",{rate:.72,pitch:.96,interrupt:true});setTimeout(()=>show("game"),900)}
 function goMission(){newPhrase();show("game")}
 function norm(t){return(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,!?;:]/g,"").replace(/\s+/g," ").trim()}
 function hard(t){return /(nh|lh|ch|mp|mb|br|cr|dr|fr|gr|pr|tr|vr|pl|cl|bl|fl|gl|rr|ss|qu|gu)/i.test(norm(t))}
@@ -320,11 +336,11 @@ const PHONETIC_MAP = {
 };
 
 const PHONETIC_SPEAK = {
-  CHA:"xa de xave", CHE:"xe de xerife", CHI:"xi de xicara", CHO:"xo de xodó", CHU:"xu de chuva",
+  CHA:"cha de chave", CHE:"che de cheiro", CHI:"chi de chinelo", CHO:"cho de chocolate", CHU:"chu de chuva",
   NHA:"nha de nhoque", NHE:"nhe", NHI:"nhi", NHO:"nho de nhoque", NHU:"nhu",
   LHA:"lha de palha", LHE:"lhe de mulher", LHI:"lhi", LHO:"lho de milho", LHU:"lhu",
-  BRA:"bra de braço", BRE:"bre", BRI:"bri de brilho", BRO:"bro", BRU:"bru",
-  PRA:"pra de prato", PRE:"pre de presente", PRI:"pri de primo", PRO:"pro", PRU:"pru",
+  BRA:"bra de braco", BRE:"bre de breve", BRI:"bri de brilho", BRO:"bro de brotar", BRU:"bru de bruxa",
+  PRA:"pra de prato", PRE:"pre de presente", PRI:"pri de primo", PRO:"pro de prova", PRU:"pru",
   TRA:"tra de trabalho", TRE:"tre de trem", TRI:"tri de trigo", TRO:"tro de troca", TRU:"tru",
   BA:"ba de bala", BE:"be de bebe", BI:"bi de bico", BO:"bo de bola", BU:"bu de burro",
   PA:"pa de pato", PE:"pe de pedra", PI:"pi de pipa", PO:"po de pote", PU:"pu de pulo",
@@ -355,22 +371,61 @@ function cleanSpeakText(t){
   return text;
 }
 
-function speakNatural(text, opts={}){
+
+let AUDIO_QUEUE = [];
+let AUDIO_PLAYING = false;
+
+function clearAudioQueue(){
+  AUDIO_QUEUE = [];
+  try{ speechSynthesis.cancel(); }catch(e){}
+  AUDIO_PLAYING = false;
+}
+
+function processAudioQueue(){
+  if(AUDIO_PLAYING || AUDIO_QUEUE.length===0) return;
+
+  const item = AUDIO_QUEUE.shift();
+  AUDIO_PLAYING = true;
+
   try{
-    speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(cleanSpeakText(text));
+    const utter = new SpeechSynthesisUtterance(cleanSpeakText(item.text));
     utter.lang = "pt-BR";
-    utter.rate = opts.rate || 0.78;
-    utter.pitch = opts.pitch || 1.0;
+    utter.rate = item.opts.rate || 0.78;
+    utter.pitch = item.opts.pitch || 1.0;
     utter.volume = 1;
+
     const voices = speechSynthesis.getVoices();
     const br = voices.find(v => /pt-BR|Brazil|Brasil|Portuguese/i.test((v.lang||"")+" "+(v.name||"")));
     if(br) utter.voice = br;
+
+    utter.onend = ()=>{
+      AUDIO_PLAYING = false;
+      setTimeout(processAudioQueue, 120);
+    };
+
+    utter.onerror = ()=>{
+      AUDIO_PLAYING = false;
+      setTimeout(processAudioQueue, 120);
+    };
+
     speechSynthesis.speak(utter);
-  }catch(e){}
+  }catch(e){
+    AUDIO_PLAYING = false;
+    setTimeout(processAudioQueue, 120);
+  }
+}
+
+function speakNatural(text, opts={}){
+  if(opts.interrupt){
+    clearAudioQueue();
+  }
+
+  AUDIO_QUEUE.push({text:String(text||""), opts});
+  processAudioQueue();
 }
 
 function speak(t){speakNatural(t)}
+
 
 
 function speakPhrase(){speakNatural("Valendo! "+$("phrase").innerText,{rate:.82,pitch:1.05})}
@@ -426,7 +481,7 @@ function similar(a,b){let A=words(a),B=words(b),hit=0;A.forEach(w=>{if(B.include
 function manual(){let w=words($("phrase").innerText);targetWord=w[0]||"";$("question").innerText='Digite a palavra "'+targetWord+'"';$("answer").value="";$("manualBox").style.display="block"}
 function confirmManual(){if(norm($("answer").value)===targetWord)reward();else $("status").innerText="Quase!";$("manualBox").style.display="none"}
 /* ===== ENGINE DE RECOMPENSAS ===== */
-function reward(){let c=career(),id=c.id;set("ml17_xp",xp()+careerXpReward(id));set("ml17_coins",coins()+careerCoinReward(id));set("ml17_time",time()+careerRewardTime(id));set("ml17_phrase_count",num("ml17_phrase_count")+1);set("ml17_combo",num("ml17_combo")+1);trackWords(true);let sh=$("stageHero");if(sh){sh.classList.add("victory");setTimeout(()=>sh.classList.remove("victory"),800)}animate();if(get("ml17_test_active","")){set("ml17_test_active","");modal("🎬","FIM DO TESTE","Gostou dessa carreira?","Leia mais para liberar para sempre!")}newPhrase();update();$("status").innerText="🎉 Missão completa! Combo: "+num("ml17_combo");maybeInvite()}
+function reward(){let c=career(),id=c.id;set("ml17_xp",xp()+careerXpReward(id));set("ml17_coins",coins()+careerCoinReward(id));set("ml17_time",time()+careerRewardTime(id));set("ml17_phrase_count",num("ml17_phrase_count")+1);set("ml17_combo",num("ml17_combo")+1);trackWords(true);let sh=$("stageHero");if(sh){sh.classList.add("victory");setTimeout(()=>sh.classList.remove("victory"),800)}animate();if(get("ml17_test_active","")){set("ml17_test_active","");modal("🎬","FIM DO TESTE","Gostou dessa carreira?","Leia mais para liberar para sempre!")}newPhrase();update();$("status").innerText="✅ Acertou! Missão completa! Combo: "+num("ml17_combo");maybeInvite()}
 function skip(){set("ml17_xp",Math.max(0,xp()-5));set("ml17_combo",0);newPhrase();update();$("status").innerText="Perdeu 5 XP por trocar."}
 
 function criarParticulas(){
@@ -439,7 +494,7 @@ function criarParticulas(){
     setTimeout(()=>p.remove(),1300);
   }
 }
-function animate(){let d=document.createElement("div");d.className="coin";d.innerText=career().effect;d.style.left="50vw";d.style.top="60vh";d.style.setProperty("--x",(Math.random()*140-70)+"px");document.body.appendChild(d);setTimeout(()=>d.remove(),1100);confetti(25);criarParticulas();speakNatural(randomPraise(),{rate:.86,pitch:1.15});setTimeout(()=>speakNatural(contextualPraise(),{rate:.82,pitch:1.02}),850)}
+function animate(){let d=document.createElement("div");d.className="coin";d.innerText=career().effect;d.style.left="50vw";d.style.top="60vh";d.style.setProperty("--x",(Math.random()*140-70)+"px");document.body.appendChild(d);setTimeout(()=>d.remove(),1100);confetti(25);criarParticulas();speakNatural(randomPraise(),{rate:.82,pitch:1.12,interrupt:true});setTimeout(()=>speakNatural(contextualPraise(),{rate:.72,pitch:1.0}),1600)}
 function confetti(q){const colors=["#facc15","#fb7185","#38bdf8","#22c55e","#a78bfa"];for(let i=0;i<q;i++){let c=document.createElement("div");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDuration=(Math.random()*1.4+1.8)+"s";document.body.appendChild(c);setTimeout(()=>c.remove(),3500)}}
 function setTrain(m){train=m;trainIndex=0;nextTrain()}
 function nextTrain(){let list=TRAIN[train];let arr=list[trainIndex++%list.length];$("trainText").innerText=arr.join(" ");$("syllables").innerHTML=arr.map(s=>`<div class="syllable" onclick="speakSyllable('${s}')">${s}</div>`).join("")}
@@ -449,16 +504,16 @@ function syllableSound(s){
   return PHONETIC_MAP[s] || String(s||"").toUpperCase();
 }
 function syllableSpeakText(s){
-  return PHONETIC_SPEAK[s] || syllableSound(s);
+  return PHONETIC_SPEAK[s] || syllableSound(s).toLowerCase();
 }
 function speakSyllable(s){
   const som = syllableSpeakText(s);
-  speakNatural(s + ". Tem som de " + som + ".", {rate:0.68, pitch:0.95});
+  speakNatural("Som de " + som + ". Repita comigo: " + som + ".", {rate:0.62, pitch:0.95, interrupt:true});
 }
 function speakTrain(){
   const arr = $("trainText").innerText.trim().split(" ");
-  const leitura = arr.map(s => s + ". " + syllableSpeakText(s) + ".").join(" ");
-  speakNatural(leitura, {rate:0.62, pitch:0.95});
+  const leitura = arr.map(s => "Som de " + syllableSpeakText(s) + ".").join(" ");
+  speakNatural(leitura, {rate:0.58, pitch:0.95, interrupt:true});
 }
 
 /* ===== PAINEL DOS PAIS ===== */
@@ -515,9 +570,9 @@ function openCall(c,testOnly){
  $("callAccept").onclick=()=>{closeCall();chooseCareer(c.id,testOnly)};
  $("callOverlay").classList.add("radioFx");
  $("callOverlay").style.display="flex";
- radioSpeak(fullText);
+ setTimeout(()=>speakNatural(fullText,{rate:.72,pitch:1.0,interrupt:true}),350);
 }
-function closeCall(){$("callOverlay").style.display="none";$("callOverlay").classList.remove("radioFx")}
+function closeCall(){clearAudioQueue();$("callOverlay").style.display="none";$("callOverlay").classList.remove("radioFx")}
 function prestigeItems(){
  return [
   {id:"helmet_fire",icon:"🪖",name:"Capacete de Comandante",job:"Bombeiro",rarity:"Raro",price:120},
