@@ -336,7 +336,7 @@ function cleanSpeakText(t){
   const ordered = Object.keys(PHONETIC_MAP).sort((a,b)=>b.length-a.length);
 
   ordered.forEach(key=>{
-    const safe = key.replace(/[.*+?^${}()|[\]\]/g,"\$&");
+    const safe = key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
     text = text.replace(new RegExp("\b"+safe+"\b","g"), PHONETIC_MAP[key]);
   });
 
