@@ -85,6 +85,17 @@ body.night .bg{filter:brightness(.72) saturate(.85)}
 body.night .ocean{background:radial-gradient(circle at 30% 20%,#1e3a8a,#0f172a 60%,#020617)}
 body.night .bg:before{opacity:.55}
 
+
+.avatarAlive{animation:aliveFloat 1.8s ease-in-out infinite}
+@keyframes aliveFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.04)}}
+.stageHero.victory{animation:victoryJump .7s ease}
+@keyframes victoryJump{0%{transform:translateY(0)}40%{transform:translateY(-22px) scale(1.03)}100%{transform:translateY(0)}}
+.itemCard{position:relative;overflow:hidden}
+.itemCard.lockedItem{filter:grayscale(.55) brightness(.75)}
+.itemCard.canBuy{border-color:#facc15;box-shadow:0 0 24px rgba(250,204,21,.35)}
+.itemCard .buyBtn{margin-top:8px;padding:9px 8px;border-radius:18px;font-size:12px}
+.equippedBadge{position:absolute;top:8px;right:8px;background:#22c55e;color:white;border-radius:999px;padding:4px 8px;font-size:11px}
+
 @media(max-width:560px){.careerGrid{grid-template-columns:1fr;height:calc(100vh - 255px)}.stageHero{height:225px}.grid{grid-template-columns:1fr}.worldMap{transform:scale(.58);transform-origin:top left;height:1900px}.mapWrap{padding-top:75px}.bottom{grid-template-columns:repeat(2,1fr)}.hudBox b{font-size:15px}}
 </style>
 </head>
@@ -93,7 +104,7 @@ body.night .bg:before{opacity:.55}
 <div class="hud"><div class="hudBox">XP<b id="xpHud">0</b></div><div class="hudBox">MOEDAS<b id="coinHud">0</b></div><div class="hudBox">PATENTE<b id="rankHud">Recruta</b></div></div>
 <main class="app">
 <section id="choose" class="screen active"><div class="panel"><h1 class="title">Escolha sua primeira carreira</h1><p class="sub">A primeira profissão é grátis. Depois você desbloqueia as outras com XP.</p><input id="playerName" placeholder="Nome do jogador. Ex: Arthur"></div><div id="careerGrid" class="careerGrid"></div></section>
-<section id="map" class="screen"><div class="mapWrap"><div class="worldMap"><div class="ocean"></div><div id="paths"></div><div id="islands"></div><div id="player" class="player">🚒</div></div></div><div class="bottom"><button class="btn green" onclick="goMission()">🎮 Jogar</button><button class="btn purple" onclick="show('choose')">🧍 Carreiras</button><button class="btn yellow" onclick="show('lab')">⚡ Sons</button><button class="btn" onclick="show('parent')">🔐 Pais</button><button class="btn dark" onclick="show('store')">🎖️ Loja</button></div></section>
+<section id="map" class="screen"><div class="mapWrap"><div class="worldMap"><div class="ocean"></div><div id="paths"></div><div id="islands"></div><div id="player" class="player avatarAlive">🚒</div></div></div><div class="bottom"><button class="btn green" onclick="goMission()">🎮 Jogar</button><button class="btn purple" onclick="show('choose')">🧍 Carreiras</button><button class="btn yellow" onclick="show('lab')">⚡ Sons</button><button class="btn" onclick="show('parent')">🔐 Pais</button><button class="btn dark" onclick="show('store')">🎖️ Loja</button></div></section>
 <section id="game" class="screen"><div class="panel" style="margin-top:72px"><div id="stageHero" class="stageHero"><div class="heroText" id="missionTitle">MISSÃO: LER</div></div><p class="sub" id="missionStory"></p><div class="bar"><div id="xpFill" class="fill"></div></div><div class="readBox"><div id="phrase" class="phrase"></div></div><div style="text-align:center"><span id="rewardLabel" class="reward">+15 XP • +3 moedas • +1 min</span></div><div class="grid"><button class="btn yellow" onclick="guide()">✨ Karaokê</button><button class="btn purple" onclick="speakPhrase()">🔊 Narrador</button><button class="btn" onclick="listen()">🎤 Ler em voz alta</button><button class="btn green" onclick="manual()">✅ Validar</button><button class="btn red" onclick="skip()">🔁 Trocar -5</button><button class="btn dark" onclick="show('map')">🗺️ Mapa</button></div><div id="manualBox" class="manual"><b id="question"></b><input id="answer" placeholder="Digite a palavra" style="margin-top:8px"><button class="btn green" onclick="confirmManual()">Confirmar</button></div><div id="voiceWave" class="waveListen"><span></span><span></span><span></span><span></span><span></span></div><div id="status" class="status"></div></div></section>
 <section id="lab" class="screen"><div class="panel"><h1 class="title">Arena dos Sons</h1><p class="sub">Agora a voz ensina o som junto: BA é bá, CHA é chá, BRA é brá.</p><div class="grid"><button class="btn green" onclick="setTrain('basic')">Básico</button><button class="btn yellow" onclick="setTrain('cluster')">Encontros</button><button class="btn purple" onclick="setTrain('digraph')">Dígrafos</button><button class="btn red" onclick="setTrain('rule')">Regras</button></div><div id="trainText" class="labCard">BA BE BI BO BU</div><div id="syllables" class="syllableGrid"></div><button class="btn yellow" onclick="speakTrain()">🔊 Ouvir juntos</button><button class="btn purple" onclick="nextTrain()">🔁 Próximo</button><button class="btn dark" onclick="show('map')">Voltar</button></div></section>
 <section id="store" class="screen"><div class="panel"><h1 class="title">Loja de Prestígio</h1><p class="sub">Itens raros por carreira. Eles criam desejo de evolução sem atrapalhar a leitura.</p><div id="prestigeList" class="prestige"></div><button class="btn dark" onclick="show('map')">Voltar</button></div></section>
@@ -181,8 +192,8 @@ function careerCoinReward(id){return num("ml17_coins_"+id,cfg("coins",3))}
 function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");update();window.scrollTo(0,0)}
 function renderCareers(){let first=!active(); $("careerGrid").innerHTML=CAREERS.filter(c=>isCareerEnabled(c.id)||first).map(c=>{let u=unlocked().includes(c.id)||first||xp()>=c.unlock;return `<div class="career" onclick="chooseCareer('${c.id}')" style="background-image:url('${c.img}')">${!u?'<div class="lockBadge">🔒</div>':''}<div class="careerName">${c.icon} ${c.full}<br><span class="free">${first?'1ª escolha grátis':u?'Liberado':'Precisa '+c.unlock+' XP'}</span></div></div>`}).join("")}
 function chooseCareer(id,testOnly=false){let first=!active(), c=CAREERS.find(x=>x.id===id), arr=unlocked();if(!first&&!arr.includes(id)&&xp()<c.unlock&&!testOnly){if(tastingEnabled()){offerTestCareer(id);return}modal("🔒","CARREIRA BLOQUEADA","Você precisa de",c.unlock+" XP");return}if(testOnly){set("ml17_test_active",id);modal(c.icon,"MODO DEGUSTAÇÃO",c.full,"Você pode testar por 1 frase");setTimeout(()=>show("game"),350);return}if(!arr.includes(id))arr.push(id);saveUnlocked(arr);set("ml17_active",id);set("ml17_test_active","");set("ml17_player",$("playerName").value.trim()||get("ml17_player","Herói"));modal(c.icon,"CARREIRA ESCOLHIDA",c.full,"MISSÃO ATIVADA");show("map")}
-function update(){let c=career();document.body.className=c.theme;$("xpHud").innerText=xp();$("coinHud").innerText=coins();$("rankHud").innerText=rank()[0];$("playerName").value=get("ml17_player","");$("stageHero").style.backgroundImage=`url('${c.img}')`;$("missionTitle").innerText=c.title;$("missionStory").innerText=c.mission;let nr=nextRank();$("xpFill").style.width=nr?Math.min(xp()/nr[1]*100,100)+"%":"100%";$("rewardLabel").innerText=`+${careerXpReward(c.id)} XP • +${careerCoinReward(c.id)} moedas • +${careerRewardTime(c.id)} min`;renderMap();renderCareers();if(!$("phrase").innerText)newPhrase()}
-function renderMap(){let arr=unlocked(), first=!active(), visible=CAREERS.filter(c=>isCareerEnabled(c.id)||first), ids=visible.map(c=>c.id), paths="";for(let i=0;i<ids.length-1;i++){let a=POS[ids[i]],b=POS[ids[i+1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;paths+=`<div class="path" style="left:${a[0]+120}px;top:${a[1]+84}px;width:${len}px;transform:rotate(${ang}deg);transform-origin:left center"></div>`}$("paths").innerHTML=paths;let html="";visible.forEach(c=>{let p=POS[c.id],u=arr.includes(c.id)||first||xp()>=c.unlock;html+=`<div class="island ${u?'':'locked'}" onclick="moveToCareer('${c.id}')" style="left:${p[0]}px;top:${p[1]}px;background-image:url('${c.img}')">${u?'':'<div class="lock">🔒</div>'}<div class="islandLabel">${c.icon} ${c.name}<div class="req">${u?'Liberado':'Precisa '+c.unlock+' XP'}</div></div></div>`});$("islands").innerHTML=html;let p=POS[active()]||POS.cbmerj;$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";$("player").innerText=career(active()||"cbmerj").icon}
+function update(){let c=career();document.body.className=c.theme;$("xpHud").innerText=xp();$("coinHud").innerText=coins();$("rankHud").innerText=rank()[0];$("playerName").value=get("ml17_player","");$("stageHero").style.backgroundImage=`url('${c.img}')`;$("missionTitle").innerText=c.title;$("missionStory").innerText=c.mission;let nr=nextRank();$("xpFill").style.width=nr?Math.min(xp()/nr[1]*100,100)+"%":"100%";$("rewardLabel").innerText=`+${careerXpReward(c.id)} XP • +${careerCoinReward(c.id)} moedas • +${careerRewardTime(c.id)} min`;renderMap();renderCareers();if($("prestigeList"))renderPrestige();if(!$("phrase").innerText)newPhrase()}
+function renderMap(){let arr=unlocked(), first=!active(), visible=CAREERS.filter(c=>isCareerEnabled(c.id)||first), ids=visible.map(c=>c.id), paths="";for(let i=0;i<ids.length-1;i++){let a=POS[ids[i]],b=POS[ids[i+1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;paths+=`<div class="path" style="left:${a[0]+120}px;top:${a[1]+84}px;width:${len}px;transform:rotate(${ang}deg);transform-origin:left center"></div>`}$("paths").innerHTML=paths;let html="";visible.forEach(c=>{let p=POS[c.id],u=arr.includes(c.id)||first||xp()>=c.unlock;html+=`<div class="island ${u?'':'locked'}" onclick="moveToCareer('${c.id}')" style="left:${p[0]}px;top:${p[1]}px;background-image:url('${c.img}')">${u?'':'<div class="lock">🔒</div>'}<div class="islandLabel">${c.icon} ${c.name}<div class="req">${u?'Liberado':'Precisa '+c.unlock+' XP'}</div></div></div>`});$("islands").innerHTML=html;let p=POS[active()]||POS.cbmerj;$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";let eq=get("ml17_equipped_item","");let item=prestigeItems?prestigeItems().find(x=>x.id===eq):null;$("player").innerText=(item?item.icon:career(active()||"cbmerj").icon)}
 function moveToCareer(id){let c=CAREERS.find(x=>x.id===id), arr=unlocked(), first=!active();if(!first&&!arr.includes(id)&&xp()<c.unlock){chooseCareer(id);return}chooseCareer(id);let p=POS[id];$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";speak("Indo para "+c.full+"!");setTimeout(()=>show("game"),900)}
 function goMission(){newPhrase();show("game")}
 function norm(t){return(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,!?;:]/g,"").replace(/\s+/g," ").trim()}
@@ -191,8 +202,44 @@ function poolByDifficulty(level){let simple=["O gato pulou.","A bola caiu.","A m
 function newPhrase(){let c=career(), level=careerDifficulty(c.id);let list=[...c.phrases,...poolByDifficulty(level)].filter(f=>!hard(f)||level==="longa");let p=list[Math.floor(Math.random()*list.length)]||"O aluno leu.";$("phrase").innerHTML=p.split(" ").map(w=>`<span class="word">${w}</span>`).join(" ");$("status").innerText=""}
 function words(t){return norm(t).split(" ").filter(w=>w.length>1&&!["o","a","e","de","do","da","no","na","um","uma"].includes(w))}
 function guide(){clearInterval(guidedTimer);let ws=[...document.querySelectorAll(".word")],i=0;ws.forEach(w=>w.classList.remove("active"));guidedTimer=setInterval(()=>{ws.forEach(w=>w.classList.remove("active"));if(i>=ws.length){clearInterval(guidedTimer);return}ws[i++].classList.add("active")},800)}
-function speak(t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="pt-BR";u.pitch=1.18;u.rate=1.05;speechSynthesis.speak(u)}catch(e){}}
-function speakPhrase(){speak("VAAALENDO! "+$("phrase").innerText)}
+
+function cleanSpeakText(t){
+ return String(t||"")
+ .replace(/GO+L/gi,"golaço")
+ .replace(/Goooo+ol/gi,"golaço")
+ .replace(/CBMERJ/g,"Corpo de Bombeiros")
+ .replace(/PMRJ/g,"Polícia Militar")
+ .replace(/FAB/g,"Força Aérea")
+ .replace(/XP/g,"xis pê")
+ .replace(/VAAALENDO/gi,"Valendo")
+ .replace(/BRA/g,"brá").replace(/BRE/g,"bré").replace(/BRI/g,"brí").replace(/BRO/g,"bró").replace(/BRU/g,"brú")
+ .replace(/TRA/g,"trá").replace(/TRE/g,"tré").replace(/TRI/g,"trí").replace(/TRO/g,"tró").replace(/TRU/g,"trú")
+ .replace(/PRA/g,"prá").replace(/PRE/g,"pré").replace(/PRI/g,"prí").replace(/PRO/g,"pró").replace(/PRU/g,"prú")
+ .replace(/CHA/g,"chá").replace(/CHE/g,"ché").replace(/CHI/g,"xi").replace(/CHO/g,"chó").replace(/CHU/g,"chú")
+ .replace(/NHA/g,"nhá").replace(/NHE/g,"nhé").replace(/NHI/g,"nhí").replace(/NHO/g,"nhó").replace(/NHU/g,"nhú")
+ .replace(/LHA/g,"lhá").replace(/LHE/g,"lhé").replace(/LHI/g,"lhí").replace(/LHO/g,"lhó").replace(/LHU/g,"lhú")
+ .replace(/BA/g,"bá").replace(/BE/g,"bé").replace(/BI/g,"bí").replace(/BO/g,"bó").replace(/BU/g,"bú")
+ .replace(/PA/g,"pá").replace(/PE/g,"pé").replace(/PI/g,"pí").replace(/PO/g,"pó").replace(/PU/g,"pú")
+ .replace(/MA/g,"má").replace(/ME/g,"mé").replace(/MI/g,"mí").replace(/MO/g,"mó").replace(/MU/g,"mú")
+ .replace(/LA/g,"lá").replace(/LE/g,"lé").replace(/LI/g,"lí").replace(/LO/g,"ló").replace(/LU/g,"lú");
+}
+function speakNatural(t, opts={}){
+ try{
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(cleanSpeakText(t));
+  u.lang="pt-BR";
+  u.pitch=opts.pitch||1.08;
+  u.rate=opts.rate||0.92;
+  u.volume=1;
+  const voices=speechSynthesis.getVoices();
+  const br=voices.find(v=>/pt-BR|Brazil|Brasil/i.test(v.lang+" "+v.name));
+  if(br)u.voice=br;
+  speechSynthesis.speak(u);
+ }catch(e){}
+}
+
+function speak(t){speakNatural(t)}
+function speakPhrase(){speakNatural("Valendo! "+$("phrase").innerText,{rate:.9,pitch:1.08})}
 function listen(){
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!SR){
@@ -237,7 +284,7 @@ r.start();
 function similar(a,b){let A=words(a),B=words(b),hit=0;A.forEach(w=>{if(B.includes(w))hit++});return hit/Math.max(A.length,1)}
 function manual(){let w=words($("phrase").innerText);targetWord=w[0]||"";$("question").innerText='Digite a palavra "'+targetWord+'"';$("answer").value="";$("manualBox").style.display="block"}
 function confirmManual(){if(norm($("answer").value)===targetWord)reward();else $("status").innerText="Quase!";$("manualBox").style.display="none"}
-function reward(){let c=career(),id=c.id;set("ml17_xp",xp()+careerXpReward(id));set("ml17_coins",coins()+careerCoinReward(id));set("ml17_time",time()+careerRewardTime(id));set("ml17_phrase_count",num("ml17_phrase_count")+1);set("ml17_combo",num("ml17_combo")+1);trackWords(true);animate();if(get("ml17_test_active","")){set("ml17_test_active","");modal("🎬","FIM DO TESTE","Gostou dessa carreira?","Leia mais para liberar para sempre!")}newPhrase();update();$("status").innerText="🎉 Missão completa! Combo: "+num("ml17_combo");maybeInvite()}
+function reward(){let c=career(),id=c.id;set("ml17_xp",xp()+careerXpReward(id));set("ml17_coins",coins()+careerCoinReward(id));set("ml17_time",time()+careerRewardTime(id));set("ml17_phrase_count",num("ml17_phrase_count")+1);set("ml17_combo",num("ml17_combo")+1);trackWords(true);let sh=$("stageHero");if(sh){sh.classList.add("victory");setTimeout(()=>sh.classList.remove("victory"),800)}animate();if(get("ml17_test_active","")){set("ml17_test_active","");modal("🎬","FIM DO TESTE","Gostou dessa carreira?","Leia mais para liberar para sempre!")}newPhrase();update();$("status").innerText="🎉 Missão completa! Combo: "+num("ml17_combo");maybeInvite()}
 function skip(){set("ml17_xp",Math.max(0,xp()-5));set("ml17_combo",0);newPhrase();update();$("status").innerText="Perdeu 5 XP por trocar."}
 function animate(){let d=document.createElement("div");d.className="coin";d.innerText=career().effect;d.style.left="50vw";d.style.top="60vh";d.style.setProperty("--x",(Math.random()*140-70)+"px");document.body.appendChild(d);setTimeout(()=>d.remove(),1100);confetti(25);speak(contextualPraise())}
 function confetti(q){const colors=["#facc15","#fb7185","#38bdf8","#22c55e","#a78bfa"];for(let i=0;i<q;i++){let c=document.createElement("div");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDuration=(Math.random()*1.4+1.8)+"s";document.body.appendChild(c);setTimeout(()=>c.remove(),3500)}}
@@ -276,7 +323,7 @@ function contextualPraise(){
   navy:"Navegação concluída!",
   med:"Paciente salvo pela leitura!",
   vet:"Os animais agradecem!",
-  soccer:"GOOOOOOL DA LEITURA!",
+  soccer:"Que golaço da leitura!",
   school:"Aula concluída com sucesso!",
   law:"Caso vencido com sabedoria!",
   hero:"O mundo foi protegido!"
@@ -291,25 +338,47 @@ function radioBeep(){
 }
 function openCall(c,testOnly){
  radioBeep();
+ let child=(get("ml17_player","Herói")||"Herói");
+ let fullText=child+", recebemos um chamado de emergência. "+c.mission+" Quer responder agora?";
  $("callIcon").innerText=c.icon;
  $("callTitle").innerText="CHAMADO DE EMERGÊNCIA";
- $("callText").innerText=(get("ml17_player","Herói")||"Herói")+", recebemos um chamado: "+c.mission+" Quer responder agora?";
+ $("callText").innerText=fullText;
  $("callAccept").onclick=()=>{closeCall();chooseCareer(c.id,testOnly)};
  $("callOverlay").style.display="flex";
- speak("Atenção! Chamado de emergência para "+c.full+"!");
+ speakNatural("Atenção. "+fullText,{rate:.9,pitch:1.05});
 }
 function closeCall(){$("callOverlay").style.display="none"}
-function renderPrestige(){
- const items=[
-  ["🚒","Capacete dourado","Bombeiro","Raro",300],
-  ["🚀","Mochila espacial","FAB/Astronauta","Épico",900],
-  ["⚽","Chuteira lendária","Futebol","Lendário",1500],
-  ["⚖️","Medalha da justiça","Advogado","Épico",1800],
-  ["🦸","Aura de herói","Heróis","Lendário",2500],
-  ["🐾","Mascote ajudante","Veterinária","Raro",700]
+function prestigeItems(){
+ return [
+  {id:"helmet_fire",icon:"🪖",name:"Capacete de Comandante",job:"Bombeiro",rarity:"Raro",price:120},
+  {id:"radio_pmrj",icon:"📻",name:"Rádio de Missão",job:"Polícia",rarity:"Raro",price:180},
+  {id:"jetpack_fab",icon:"🚀",name:"Mochila a Jato",job:"FAB",rarity:"Épico",price:300},
+  {id:"anchor_navy",icon:"⚓",name:"Medalha Naval",job:"Marinha",rarity:"Épico",price:300},
+  {id:"stetho_med",icon:"🩺",name:"Estetoscópio Dourado",job:"Médico",rarity:"Raro",price:220},
+  {id:"pet_vet",icon:"🐶",name:"Mascote Ajudante",job:"Veterinária",rarity:"Raro",price:200},
+  {id:"boot_ball",icon:"👟",name:"Chuteira Lendária",job:"Futebol",rarity:"Lendário",price:500},
+  {id:"book_teacher",icon:"📘",name:"Livro Mágico",job:"Professor",rarity:"Épico",price:280},
+  {id:"law_medal",icon:"⚖️",name:"Medalha da Justiça",job:"Advogado",rarity:"Épico",price:350},
+  {id:"hero_aura",icon:"🌟",name:"Aura de Herói",job:"Heróis",rarity:"Lendário",price:700}
  ];
- $("prestigeList").innerHTML=items.map(i=>`<div class="itemCard"><div style="font-size:38px">${i[0]}</div><div>${i[1]}</div><small>${i[2]}</small><br><span class="rarity">${i[3]} • ${i[4]} moedas</span></div>`).join("");
 }
+function ownedItems(){try{return JSON.parse(get("ml17_owned_items","[]"))}catch(e){return []}}
+function saveOwnedItems(a){set("ml17_owned_items",JSON.stringify(a))}
+function renderPrestige(){
+ let owned=ownedItems(), equipped=get("ml17_equipped_item","");
+ $("prestigeList").innerHTML=prestigeItems().map(i=>{
+  let has=owned.includes(i.id), can=coins()>=i.price, eq=equipped===i.id;
+  return `<div class="itemCard ${has||can?'canBuy':'lockedItem'}">${eq?'<div class="equippedBadge">Usando</div>':''}<div style="font-size:42px">${i.icon}</div><div>${i.name}</div><small>${i.job}</small><br><span class="rarity">${i.rarity} • ${i.price} moedas</span><button class="btn buyBtn ${has?'green':can?'yellow':'dark'}" onclick="${has?`equipItem('${i.id}')`:`buyItem('${i.id}')`}">${has?'Usar':can?'Comprar':'Bloqueado'}</button></div>`;
+ }).join("");
+}
+function buyItem(id){
+ let i=prestigeItems().find(x=>x.id===id); if(!i)return;
+ if(coins()<i.price){modal("🔒","MOEDAS INSUFICIENTES","Você precisa de",i.price+" moedas");return}
+ set("ml17_coins",coins()-i.price);
+ let owned=ownedItems(); if(!owned.includes(id))owned.push(id); saveOwnedItems(owned);
+ equipItem(id);
+}
+function equipItem(id){set("ml17_equipped_item",id);renderPrestige();update();modal("🎖️","ITEM EQUIPADO","Seu avatar ganhou um novo item.","")}
 function spawnMapSparks(){
  const map=document.querySelector(".worldMap"); if(!map)return;
  for(let i=0;i<5;i++){let s=document.createElement("div");s.className="mapSpark";s.innerText=["✨","⭐","🪙","💫"][Math.floor(Math.random()*4)];s.style.left=(80+Math.random()*1200)+"px";s.style.top=(180+Math.random()*750)+"px";s.style.animationDelay=(Math.random()*2)+"s";map.appendChild(s);setTimeout(()=>s.remove(),4200)}
