@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Missão Leitura V20.7 Imagens Limpas 15 Ajustada</title>
+<title>Missão Leitura V20.8 Imagens Limpas 15 Ajustada</title>
 <style>
 :root{--a:#0ea5e9;--b:#7c3aed;--c:#facc15;--neon:#38bdf8;--accent:#f97316}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -35,7 +35,7 @@ input,select{width:100%;border:3px solid rgba(255,255,255,.8);border-radius:24px
 .btn:active{transform:translateY(5px) scale(.94);box-shadow:0 3px 0 rgba(0,0,0,.22)}.green{background:linear-gradient(135deg,#22c55e,#16a34a)}.yellow{background:linear-gradient(135deg,#facc15,#fb923c);color:#3b2200}.red{background:linear-gradient(135deg,#fb7185,#ef4444)}.purple{background:linear-gradient(135deg,#c084fc,#7c3aed)}.dark{background:linear-gradient(135deg,#64748b,#334155)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid .btn{margin-top:0}
 .careerGrid{height:calc(100vh - 250px);overflow:auto;padding:4px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.career{height:170px;background-size:cover!important;background-position:center!important;background-color:#123;border:4px solid rgba(255,255,255,.65);border-radius:30px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 10px 0 rgba(0,0,0,.22);transition:.12s}.career:active{transform:scale(.94)}.career:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(15,23,42,.82))}
+.career{height:170px;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;background-color:#123;border:4px solid rgba(255,255,255,.65);border-radius:30px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 10px 0 rgba(0,0,0,.22);transition:.12s}.career:active{transform:scale(.94)}.career:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(15,23,42,.82))}
 .careerName{position:absolute;left:8px;right:8px;bottom:10px;z-index:2;font-size:19px;font-weight:1000;text-align:center;text-shadow:0 3px 0 #000}.lockBadge{position:absolute;top:10px;right:10px;z-index:3;font-size:25px;background:rgba(15,23,42,.7);border-radius:14px;padding:5px}.free{background:#22c55e;color:white;border-radius:999px;padding:4px 8px;font-size:11px;margin-top:4px;display:inline-block}
 .mapWrap{height:100vh;overflow:auto;padding-top:70px;padding-bottom:96px}.worldMap{position:relative;width:1460px;height:1100px;margin:auto}.ocean{position:absolute;inset:0;border-radius:50px;background:radial-gradient(circle at 30% 20%,#7dd3fc,#0ea5e9 48%,#1d4ed8);box-shadow:inset 0 0 45px rgba(255,255,255,.25);overflow:hidden}.ocean:before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(120deg,rgba(255,255,255,.18) 0 2px,transparent 2px 42px);animation:waves 8s linear infinite;opacity:.45}@keyframes waves{to{transform:translateX(-120px)}}
 .path{position:absolute;height:14px;border-radius:999px;background:repeating-linear-gradient(90deg,#fff 0 20px,rgba(255,255,255,.0) 20px 38px);opacity:.9;animation:path 1.2s linear infinite;box-shadow:0 0 18px rgba(255,255,255,.9)}@keyframes path{to{background-position:78px 0}}
@@ -43,7 +43,7 @@ input,select{width:100%;border:3px solid rgba(255,255,255,.8);border-radius:24px
 .islandLabel{position:absolute;z-index:3;left:8px;right:8px;bottom:8px;font-weight:1000;text-align:center;text-shadow:0 3px 0 #000;font-size:18px}.req{font-size:12px;opacity:.9}.lock{position:absolute;z-index:4;top:48%;left:50%;transform:translate(-50%,-50%);font-size:48px;animation:lock 2s infinite ease}@keyframes lock{50%{transform:translate(-50%,-64%)}}
 .player{position:absolute;width:82px;height:82px;border-radius:26px;background:white;border:5px solid var(--c);z-index:8;display:grid;place-items:center;font-size:41px;box-shadow:0 10px 0 rgba(0,0,0,.25);transition:1s cubic-bezier(.6,-.2,.7,1.2);animation:token 1.6s infinite ease}@keyframes token{50%{transform:translateY(-9px) scale(1.05)}}
 .bottom{position:fixed;left:8px;right:8px;bottom:8px;z-index:60;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.bottom .btn{margin:0;padding:13px 5px;font-size:12px}
-.stageHero{height:250px;border-radius:34px;border:4px solid rgba(255,255,255,.72);background-size:cover;background-position:center;position:relative;overflow:hidden;box-shadow:0 12px 0 rgba(0,0,0,.22)}.stageHero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(15,23,42,.76))}
+.stageHero{height:250px;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;border-radius:34px;border:4px solid rgba(255,255,255,.72);background-size:cover;background-position:center;position:relative;overflow:hidden;box-shadow:0 12px 0 rgba(0,0,0,.22)}.stageHero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(15,23,42,.76))}
 .heroText{position:absolute;bottom:12px;left:12px;right:12px;z-index:2;text-align:center;font-size:22px;font-weight:1000;text-shadow:0 4px 0 #000}
 .readBox{background:white;color:#0f172a;border:7px solid var(--neon);border-radius:34px;margin-top:12px;padding:22px 12px;text-align:center;box-shadow:0 10px 0 rgba(14,165,233,.25)}.phrase{font-size:25px;font-weight:1000;line-height:1.45}.word{display:inline-block;padding:3px 7px;border-radius:10px}.word.active{background:#fef08a;color:#854d0e;transform:scale(1.1)}
 .reward{display:inline-block;background:#fef9c3;color:#854d0e;border:3px solid #fde047;border-radius:999px;padding:8px 12px;font-weight:1000;margin:10px auto}.bar{height:26px;background:rgba(255,255,255,.35);border:3px solid rgba(255,255,255,.65);border-radius:999px;overflow:hidden;margin-top:10px}.fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#facc15,#fb923c)}
@@ -164,7 +164,7 @@ body.night .bg:before{opacity:.55}
   position:relative;
   overflow:hidden;
 }
-.callBox:after{
+.callBox:after{pointer-events:none;
   content:"";
   position:absolute;
   inset:-60%;
@@ -197,7 +197,20 @@ body.night .bg:before{opacity:.55}
   animation:victoryJump .7s ease, heroBreath 3s ease-in-out infinite .8s;
 }
 
-@media(max-width:560px){.careerGrid{grid-template-columns:1fr;height:calc(100vh - 255px)}.stageHero{height:225px}.grid{grid-template-columns:1fr}.worldMap{zoom:.58;transform:none;transform-origin:top left;height:1100px;width:1460px}.mapWrap{padding-top:75px;max-height:calc(100vh - 80px)}.bottom{grid-template-columns:repeat(2,1fr)}.hudBox b{font-size:15px}}
+
+button,.btn,.career,.island,.player,.syllable{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  cursor:pointer;
+}
+@supports (-webkit-touch-callout:none){
+  .mapWrap{overflow:auto;-webkit-overflow-scrolling:touch}
+  .worldMap{width:100%!important;height:1150px!important}
+  .island{transform:none!important}
+}
+
+@media(max-width:560px){.careerGrid{grid-template-columns:1fr;height:calc(100vh - 255px)}.stageHero{height:225px}.grid{grid-template-columns:1fr}.worldMap{transform:none;transform-origin:top left;width:100%;height:1150px;min-width:0}.mapWrap{padding-top:75px;max-height:calc(100vh - 80px)}.bottom{grid-template-columns:repeat(2,1fr)}.hudBox b{font-size:15px}}
 </style>
 </head>
 <body class="fire">
@@ -308,8 +321,18 @@ function renderCareers(){let first=!active(); $("careerGrid").innerHTML=CAREERS.
 function chooseCareer(id,testOnly=false){let first=!active(), c=CAREERS.find(x=>x.id===id), arr=unlocked();if(!first&&!arr.includes(id)&&xp()<c.unlock&&!testOnly){if(tastingEnabled()){offerTestCareer(id);return}modal("🔒","CARREIRA BLOQUEADA","Você precisa de",c.unlock+" XP");return}if(testOnly){set("ml17_test_active",id);modal(c.icon,"MODO DEGUSTAÇÃO",c.full,"Você pode testar por 1 frase");setTimeout(()=>show("game"),350);return}if(!arr.includes(id))arr.push(id);saveUnlocked(arr);set("ml17_active",id);set("ml17_test_active","");set("ml17_player",$("playerName").value.trim()||get("ml17_player","Herói"));modal(c.icon,"CARREIRA ESCOLHIDA",c.full,"MISSÃO ATIVADA");show("map")}
 function update(){let c=career();document.body.className=c.theme;$("xpHud").innerText=xp();$("coinHud").innerText=coins();$("rankHud").innerText=rank()[0];$("playerName").value=get("ml17_player","");$("stageHero").style.backgroundImage=`url('${c.img}')`;$("missionTitle").innerText=c.title;$("missionStory").innerText=c.mission;let nr=nextRank();$("xpFill").style.width=nr?Math.min(xp()/nr[1]*100,100)+"%":"100%";$("rewardLabel").innerText=`+${careerXpReward(c.id)} XP • +${careerCoinReward(c.id)} moedas • +${careerRewardTime(c.id)} min`;renderMap();renderCareers();if($("prestigeList"))renderPrestige();if(!$("phrase").innerText)newPhrase()}
 /* ===== ENGINE DO MAPA ===== */
-function renderMap(){let arr=unlocked(), first=!active(), visible=CAREERS.filter(c=>isCareerEnabled(c.id)||first), ids=visible.map(c=>c.id), paths="";for(let i=0;i<ids.length-1;i++){let a=POS[ids[i]],b=POS[ids[i+1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;paths+=`<div class="path" style="left:${a[0]+120}px;top:${a[1]+84}px;width:${len}px;transform:rotate(${ang}deg);transform-origin:left center"></div>`}$("paths").innerHTML=paths;let html="";visible.forEach(c=>{let p=POS[c.id],u=arr.includes(c.id)||first||xp()>=c.unlock;html+=`<div class="island ${u?'':'locked'} ${get('ml17_priority_career','')===c.id?'priorityIsland':''}" onclick="moveToCareer('${c.id}')" style="left:${p[0]}px;top:${p[1]}px;background-image:url('${c.img}')">${get('ml17_priority_career','')===c.id?'<div class="priorityTag">⭐ PRIORIDADE</div>':''}${u?'':'<div class="lock">🔒</div>'}<div class="islandLabel">${c.icon} ${c.name}<div class="req">${u?'Liberado':'Precisa '+c.unlock+' XP'}</div></div></div>`});$("islands").innerHTML=html;let p=POS[active()]||POS.cbmerj;$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";let eq=get("ml17_equipped_item","");let item=prestigeItems?prestigeItems().find(x=>x.id===eq):null;$("player").innerText=(item?item.icon:career(active()||"cbmerj").icon)}
-function moveToCareer(id){let c=CAREERS.find(x=>x.id===id), arr=unlocked(), first=!active();if(!first&&!arr.includes(id)&&xp()<c.unlock){chooseCareer(id);return}chooseCareer(id);let p=POS[id];$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";animateAvatarArc();speakNatural("Comunicacao recebida. Indo para "+c.full+"!",{rate:.72,pitch:.96,interrupt:true});setTimeout(()=>show("game"),900)}
+function isMobileMap(){
+  return window.matchMedia && window.matchMedia("(max-width:560px)").matches;
+}
+function mapPos(id){
+  const p = POS[id] || POS.cbmerj;
+  if(!isMobileMap()) return p;
+  const scaleX = 360 / 1460;
+  const scaleY = 1.0;
+  return [Math.round(p[0]*scaleX + 8), Math.round(p[1]*scaleY)];
+}
+function renderMap(){let arr=unlocked(), first=!active(), visible=CAREERS.filter(c=>isCareerEnabled(c.id)||first), ids=visible.map(c=>c.id), paths="";for(let i=0;i<ids.length-1;i++){let a=mapPos(ids[i]),b=mapPos(ids[i+1]),dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;paths+=`<div class="path" style="left:${a[0]+120}px;top:${a[1]+84}px;width:${len}px;transform:rotate(${ang}deg);transform-origin:left center"></div>`}$("paths").innerHTML=paths;let html="";visible.forEach(c=>{let p=mapPos(c.id),u=arr.includes(c.id)||first||xp()>=c.unlock;html+=`<div class="island ${u?'':'locked'} ${get('ml17_priority_career','')===c.id?'priorityIsland':''}" onclick="moveToCareer('${c.id}')" style="left:${p[0]}px;top:${p[1]}px;background-image:url('${c.img}')">${get('ml17_priority_career','')===c.id?'<div class="priorityTag">⭐ PRIORIDADE</div>':''}${u?'':'<div class="lock">🔒</div>'}<div class="islandLabel">${c.icon} ${c.name}<div class="req">${u?'Liberado':'Precisa '+c.unlock+' XP'}</div></div></div>`});$("islands").innerHTML=html;let p=mapPos(active()||'cbmerj');$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";let eq=get("ml17_equipped_item","");let item=prestigeItems?prestigeItems().find(x=>x.id===eq):null;$("player").innerText=(item?item.icon:career(active()||"cbmerj").icon)}
+function moveToCareer(id){let c=CAREERS.find(x=>x.id===id), arr=unlocked(), first=!active();if(!first&&!arr.includes(id)&&xp()<c.unlock){chooseCareer(id);return}chooseCareer(id);let p=mapPos(id);$("player").style.left=(p[0]+82)+"px";$("player").style.top=(p[1]-50)+"px";animateAvatarArc();speakNatural("Comunicacao recebida. Indo para "+c.full+"!",{rate:.72,pitch:.96,interrupt:true});setTimeout(()=>show("game"),900)}
 function goMission(){newPhrase();show("game")}
 function norm(t){return(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,!?;:]/g,"").replace(/\s+/g," ").trim()}
 function hard(t){return /(nh|lh|ch|mp|mb|br|cr|dr|fr|gr|pr|tr|vr|pl|cl|bl|fl|gl|rr|ss|qu|gu)/i.test(norm(t))}
@@ -670,6 +693,7 @@ function launchManualCall(){
 }
 
 document.addEventListener("click",e=>{let w=e.target.closest(".word");if(w)speakNatural(w.innerText,{rate:.76,pitch:1.0})})
+window.addEventListener("resize",()=>{try{update()}catch(e){}});
 document.addEventListener("DOMContentLoaded",()=>{applyNightMode();if(active())show("map");update();nextTrain();renderPrestige();renderPriorityCareerSelect();spawnMapSparks()})
 </script>
 </body>
